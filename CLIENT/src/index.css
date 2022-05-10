@@ -1,0 +1,278 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+.heading h1 {
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.login .heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  padding: 0 20px;
+}
+
+.heading p {
+  color: #828282;
+}
+
+.form,
+.content {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.form-group label {
+  text-align: left;
+  display: block;
+  margin: 0 0 5px 3px;
+}
+
+.btn {
+  padding: 8px 20px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  appearance: button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-success {
+  background-color: #009879;
+  padding: 15px 30px;
+  border: 1px solid #009879;
+}
+
+.btn-warning,
+.btn-danger {
+  display: inline-block;
+  margin: 0 3px;
+  padding: 4px 4px;
+}
+
+.btn-warning {
+  background-color: #68bbd8;
+  border: 1px solid #68bbd8;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.btn svg {
+  margin-right: 8px;
+}
+
+.btn-reverse {
+  background: #fff;
+  color: #000;
+}
+
+.btn-reverse:hover {
+  background: #000;
+  color: #fff;
+}
+
+.btn-block {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.btn:hover {
+  transform: scale(0.98);
+}
+
+/* side bar */
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #000;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.sidbar_list {
+  height: auto;
+  width: 100%;
+  padding: 0;
+}
+
+.sidbar_list li:hover {
+  background: #353535;
+  cursor: pointer;
+}
+
+.sidebar_list-row {
+  height: 100%;
+  width: 100%;
+  list-style-type: none;
+  padding: 10px 20px;
+}
+
+/* table */
+.container {
+  left: 350px;
+  width: 980px;
+  position: absolute;
+  top: 100px;
+}
+
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 100%;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.content-table thead tr {
+  background-color: black;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid black;
+}
+
+.content-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
+}
+
+/* pagination */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul li {
+  list-style: none;
+}
+
+li a {
+  padding: 8px 14px;
+  background-color: white;
+  color: black;
+  margin: 8px;
+  border: #000 solid 1px;
+  border-radius: 3px;
+}
+
+li a:hover {
+  background-color: black;
+  color: white;
+  transform: scale(1);
+}
+
+.active {
+  background-color: #000;
+  color: white;
+}
+
+.filter {
+  margin-bottom: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter .form-group {
+  margin: 0 10px 0 0;
+}
+
+.filter .btn {
+  border: 1px solid #e6e6e6;
+  font-family: inherit;
+}
+
+.sidebar_list-menu {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sidbar_list .active {
+  font-weight: bold;
+}
+.sidbar_list .active li {
+  background: #353535;
+}
+
+.btn-danger svg,
+.btn-warning svg {
+  margin-right: 0;
+}
