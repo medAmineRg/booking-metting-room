@@ -18,6 +18,7 @@ import RolePerMenu from "./pages/RolePerMenu";
 
 import Menu from "./pages/Menu";
 import ProtectedRoutes from "./compenents/Auth/ProtectedRoutes";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -64,7 +65,7 @@ function App() {
             >
               <Route path="/" element={<Dashboard />} />
             </Route>
-            <Route path="*" element={<p>404!</p>} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
         <ToastContainer />

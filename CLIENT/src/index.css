@@ -276,3 +276,33 @@ li a:hover {
 .btn-warning svg {
   margin-right: 0;
 }
+
+/* welcome page */
+.flex-welcome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 60vh;
+  align-items: center;
+}
+
+.flex-welcome div:first-child p {
+  font-size: 3rem;
+}
+
+.container-btn {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.container-btn a {
+  margin-top: 3rem;
+}
+
+.bg-dark {
+  background-color: #000;
+}
+
+.container-btn .btn-warning {
+  padding: 16px 20px 20px 0;
+}

@@ -59,7 +59,7 @@ const getBookingByIdRoomUser = async (req, res) => {
   try {
     const bookByUserRoom = await Booking.findAll({
       where: result,
-      attributes: ["idBooking", "subject", "beginAt", "endAt"],
+      // attributes: ["idBooking", "subject", "beginAt", "endAt", "description"],
     });
     return res.status(200).send(bookByUserRoom);
   } catch (error) {
