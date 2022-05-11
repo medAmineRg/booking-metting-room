@@ -21,14 +21,14 @@ const { yupValidation } = require("../middleware/validateMiddleware");
 //   userSchemaLogin,
 // } = require("../Validations/userValidation");
 
-router.get("/users", auth, hasAuth(3, 2), GetUsers);
-router.get("/users/verify/:token", hasAuth(3, 2), VerifyUser);
+router.get("/users", auth, hasAuth(4, 2), GetUsers);
+router.get("/users/verify/:token", hasAuth(4, 2), VerifyUser);
 router.post("/users", RegisterUser);
 router.post("/users/:id/active", auth, ActiveAcount);
-router.post("/users/add", auth, hasAuth(3, 3), CreateUser);
+router.post("/users/add", auth, hasAuth(4, 3), CreateUser);
 router.post("/users/login", LoginUser);
 router.post("/users/logout", auth, LogoutUser);
-router.patch("/users/:id/", auth, hasAuth(3, 4), UpdateUser);
-router.delete("/users/:id", auth, hasAuth(3, 5), DeleteUser);
+router.patch("/users/:id/", auth, hasAuth(4, 4), UpdateUser);
+router.delete("/users/:id", auth, hasAuth(4, 5), DeleteUser);
 
 module.exports = router;

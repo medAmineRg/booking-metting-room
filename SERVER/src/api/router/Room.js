@@ -13,7 +13,7 @@ const router = express.Router();
 // room routs
 router.get("/rooms", auth, hasAuth(6, 2), GetRoom);
 router.post("/rooms", auth, hasAuth(6, 3), CreateRoom);
-router.post("/rooms/search-room", auth, hasAuth(9, 3), SearchRoom);
+router.post("/rooms/search-room", auth, hasAuth(6, 3), SearchRoom);
 router.patch("/rooms/:id", auth, hasAuth(6, 4), UpdateRoom);
 router.delete("/rooms/:id", auth, hasAuth(6, 5), DeleteRoom);
 
