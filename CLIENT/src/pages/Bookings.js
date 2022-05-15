@@ -15,9 +15,9 @@ import { setHours, setMinutes } from "date-fns";
 import { getRooms, reset as resetRoom } from "../features/room/roomSlice";
 import { toast } from "react-toastify";
 import DatePicker from "../compenents/UI/DatePicker";
-
+import Spinner from "../compenents/UI/Spinner";
 const Booking = () => {
-  const { bookings } = useSelector((state) => state.book);
+  const { bookings, isLoading } = useSelector((state) => state.book);
   const { rooms } = useSelector((state) => state.rooms);
 
   const menu = JSON.parse(localStorage.getItem("whereAt"));
@@ -85,7 +85,11 @@ const Booking = () => {
       });
   };
   const update = () => {
-    dispatch(updateBooking({ id, beginAt: start, endAt: end, ...booking }))
+    let updatedBooking = { id, ...booking };
+    if (start) updatedBooking.beginAt = start;
+    if (end) updatedBooking.endAt = end;
+
+    dispatch(updateBooking(updatedBooking))
       .unwrap()
       .then((res) => {
         toast.success(res.message);
@@ -112,13 +116,13 @@ const Booking = () => {
       .catch((e) => toast.error(e));
   };
 
-  let exlaudeTime = [];
+  let excludeTime = [];
   let exlaudeHours;
   if (start) {
     exlaudeHours = start.getHours();
     for (let i = 1; i < 12; i++) {
       if (exlaudeHours > 8) {
-        exlaudeTime.push(
+        excludeTime.push(
           setHours(setMinutes(new Date(), 30), exlaudeHours),
           setHours(setMinutes(new Date(), 0), exlaudeHours)
         );
@@ -137,12 +141,19 @@ const Booking = () => {
       dispatch(resetRoom());
     };
   }, [dispatch]);
+  if (isLoading) return <Spinner />;
   return (
     <div className="container">
       {open && (
         <Modal
           open={open}
-          onClose={() => setOpen(false)}
+          onClose={() => {
+            setBooking("");
+            setStartDate("");
+            setEndDate("");
+            setId(null);
+            setOpen(false);
+          }}
           submit={"Submit"}
           post={update}
         >
@@ -207,7 +218,7 @@ const Booking = () => {
                       placeholder={new Date(book.beginAt).toLocaleString(
                         "fr-FR"
                       )}
-                      exlaudeTime={exlaudeTime}
+                      excludeTime={excludeTime}
                     />
                   </div>
                   <div className="form-group">
@@ -215,7 +226,7 @@ const Booking = () => {
                       selected={end}
                       onChange={(date) => setEndDate(date)}
                       placeholder={new Date(book.endAt).toLocaleString("fr-FR")}
-                      exlaudeTime={exlaudeTime}
+                      excludeTime={excludeTime}
                     />
                   </div>
                 </section>
@@ -239,10 +250,9 @@ const Booking = () => {
                 className="form-control"
                 name="idRoom"
                 onChange={onChange}
+                defaultValue={booking.idRoom}
               >
-                <option value="none" defaultValue>
-                  Select Room
-                </option>
+                <option>Select Room</option>
                 {rooms.map((room) => {
                   return (
                     <option key={room.idRoom} value={room.idRoom}>
@@ -260,6 +270,7 @@ const Booking = () => {
                 placeholder="subject"
                 name="subject"
                 onChange={onChange}
+                defaultValue={booking.subject}
               />
             </div>
 
@@ -270,6 +281,7 @@ const Booking = () => {
                 className="form-control"
                 placeholder="description"
                 name="description"
+                defaultValue={booking.description}
                 onChange={onChange}
               />
             </div>
@@ -281,7 +293,7 @@ const Booking = () => {
                   setStartDate(date);
                 }}
                 placeholder="Select Start"
-                exlaudeTime={exlaudeTime}
+                excludeTime={excludeTime}
               />
             </div>
 
@@ -289,7 +301,7 @@ const Booking = () => {
               <DatePicker
                 selected={end}
                 onChange={(date) => setEndDate(date)}
-                exlaudeTime={exlaudeTime}
+                excludeTime={excludeTime}
                 placeholder="Select End"
               />
             </div>

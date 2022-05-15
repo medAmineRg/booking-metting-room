@@ -1,7 +1,10 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Spinner from "../compenents/UI/Spinner";
 function Dashboard() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoading } = useSelector((state) => state.auth);
+  if (isLoading) return <Spinner />;
+
   return (
     <div className="container flex-welcome">
       <div>

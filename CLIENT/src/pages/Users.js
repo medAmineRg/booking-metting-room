@@ -15,10 +15,11 @@ import {
   reset as resetUser,
   updateUser,
 } from "../features/user/userSlice";
-import { userSchemaLog } from "../Validation/UserValidation";
+import { userSchemaReg } from "../Validation/UserValidation";
+import Spinner from "../compenents/UI/Spinner";
 
 const User = () => {
-  const { users } = useSelector((state) => state.users);
+  const { users, isLoading } = useSelector((state) => state.users);
   const { role: roles } = useSelector((state) => state.role);
 
   const allMenus = JSON.parse(localStorage.getItem("whereAt"));
@@ -65,7 +66,7 @@ const User = () => {
       return;
     }
     try {
-      await userSchemaLog.validate(newUser);
+      await userSchemaReg.validate(newUser);
       dispatch(createUser(newUser))
         .unwrap()
         .then((res) => {
@@ -78,7 +79,6 @@ const User = () => {
       return toast.error(error.errors[0]);
     }
   };
-
   const updateAUser = () => {
     dispatch(updateUser({ id, ...newUser }))
       .unwrap()
@@ -125,7 +125,8 @@ const User = () => {
       dispatch(resetRole());
     };
   }, [navigate, dispatch]);
-
+  if (isLoading) return <Spinner />;
+  console.log(newUser);
   return (
     <div className="container">
       {open && (
@@ -177,9 +178,7 @@ const User = () => {
                   <div className="form-group">
                     <label>Role</label>
                     <select name="idRole" onChange={onChange}>
-                      <option disabled selected defaultValue>
-                        {user.Role.nameRole}
-                      </option>
+                      <option defaultValue>{user.Role.nameRole}</option>
                       {roles.map((role) => {
                         return (
                           <option key={role.idRole} value={role.idRole}>
@@ -214,6 +213,7 @@ const User = () => {
                 placeholder="Email"
                 name="email"
                 onChange={onChange}
+                defaultValue={newUser.email}
               />
             </div>
             <div className="form-group">
@@ -223,6 +223,7 @@ const User = () => {
                 placeholder="Fullname"
                 name="fullName"
                 onChange={onChange}
+                defaultValue={newUser.fullName}
               />
             </div>
             <div className="form-group">
@@ -232,6 +233,7 @@ const User = () => {
                 placeholder="password"
                 name="password"
                 onChange={onChange}
+                defaultValue={newUser.password}
               />
             </div>
             <div className="form-group">
@@ -241,14 +243,13 @@ const User = () => {
                 placeholder="Phone"
                 name="phone"
                 onChange={onChange}
+                defaultValue={newUser.phone}
               />
             </div>
             <div className="form-group">
               <label>Role</label>
               <select name="idRole" onChange={onChange}>
-                <option disabled="disabled" defaultValue>
-                  Choose a Role
-                </option>
+                <option>Choose a Role</option>
                 {roles.map((role) => {
                   return (
                     <option key={role.idRole} value={role.idRole}>

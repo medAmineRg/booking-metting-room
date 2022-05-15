@@ -32,6 +32,12 @@ const User = db.define(
     phone: {
       type: DataTypes.STRING(10),
       unique: true,
+      validate: {
+        len: {
+          args: [10],
+          msg: "Phone length must be 10 numbers",
+        },
+      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,

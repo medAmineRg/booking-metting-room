@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { register, reset } from "../features/auth/authSlice";
 import { userSchemaReg } from "../Validation/UserValidation";
 import { FaUser } from "react-icons/fa";
+import Spinner from "../compenents/UI/Spinner";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -58,6 +59,8 @@ function Register() {
       }
     }
   };
+  if (isLoading) return <Spinner />;
+
   return (
     <div className="login">
       <section className="heading">

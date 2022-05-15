@@ -12,9 +12,10 @@ import {
   deleteRole,
   updateRole,
 } from "../features/role/roleSlice";
+import Spinner from "../compenents/UI/Spinner";
 
 const Role = () => {
-  const { role } = useSelector((state) => state.role);
+  const { role, isLoading } = useSelector((state) => state.role);
 
   const allMenus = JSON.parse(localStorage.getItem("whereAt"));
   let showEditBtn = false;
@@ -106,6 +107,8 @@ const Role = () => {
       dispatch(reset());
     };
   }, [dispatch]);
+
+  if (isLoading) return <Spinner />;
   return (
     <div className="container">
       {open && (
@@ -163,6 +166,7 @@ const Role = () => {
                 onChange={(e) => {
                   setRoleName(e.target.value);
                 }}
+                defaultValue={roleName}
               />
             </div>
           </section>

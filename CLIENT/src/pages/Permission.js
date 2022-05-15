@@ -13,9 +13,10 @@ import {
   updatePermission,
 } from "../features/permission/permissionSlice";
 import "../index.css";
+import Spinner from "../compenents/UI/Spinner";
 
 const Permission = () => {
-  const { permission } = useSelector((state) => state.per);
+  const { permission, isLoading } = useSelector((state) => state.per);
   const dispatch = useDispatch();
 
   const allMenus = JSON.parse(localStorage.getItem("whereAt"));
@@ -106,6 +107,7 @@ const Permission = () => {
       dispatch(reset());
     };
   }, [dispatch]);
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="container">
@@ -168,6 +170,7 @@ const Permission = () => {
                 onChange={(e) => {
                   setPerName(e.target.value);
                 }}
+                defaultValue={perName}
               />
             </div>
           </section>

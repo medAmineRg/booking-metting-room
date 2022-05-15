@@ -5,7 +5,6 @@ const { getUserById, permissionExist } = require("../services/userEntity");
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
-    console.log(req.header("Authorization").replace("Bearer ", ""));
     const decode = verifyToken(token);
     if (decode.msg) {
       throw decode.msg;
@@ -18,7 +17,6 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (e) {
-    console.log(e);
     return res.status(401).json(e);
   }
 };

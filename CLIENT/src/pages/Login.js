@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { login, reset } from "../features/auth/authSlice";
 import { userSchemaLog } from "../Validation/UserValidation";
 import { FaSignInAlt } from "react-icons/fa";
+import Spinner from "../compenents/UI/Spinner";
 
 function Login() {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ function Login() {
       return toast.error(error.errors[0]);
     }
   };
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="login">

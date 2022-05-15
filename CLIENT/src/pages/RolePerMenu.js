@@ -14,9 +14,10 @@ import {
   postRolePerMenu,
   reset,
 } from "../features/RolePerMenu/rolePerMenuSlice";
+import Spinner from "../compenents/UI/Spinner";
 
 const RolePerMenu = () => {
-  const { rolePerMenu } = useSelector((state) => state.rolePerMenu);
+  const { rolePerMenu, isLoading } = useSelector((state) => state.rolePerMenu);
   const { role: roles } = useSelector((state) => state.role);
   const { menus } = useSelector((state) => state.menus);
   const { permission } = useSelector((state) => state.per);
@@ -111,6 +112,7 @@ const RolePerMenu = () => {
       dispatch(reset());
     };
   }, [navigate, dispatch]);
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="container">
@@ -167,9 +169,7 @@ const RolePerMenu = () => {
           <section className="from">
             <div className="form-group">
               <select name="idRole" onChange={onChange}>
-                <option disabled value={"Choose a Role"}>
-                  Choose a Role
-                </option>
+                <option value={"Choose a Role"}>Choose a Role</option>
                 {roles.map((role) => {
                   return (
                     <option key={role.idRole} value={role.idRole}>
@@ -181,7 +181,7 @@ const RolePerMenu = () => {
             </div>
             <div className="form-group">
               <select name="idPer" onChange={onChange}>
-                <option disabled value={"Choose a Permission"}>
+                <option value={"Choose a Permission"}>
                   Choose a Permission
                 </option>
                 {permission.map((per) => {
@@ -195,9 +195,7 @@ const RolePerMenu = () => {
             </div>
             <div className="form-group">
               <select name="idMenu" onChange={onChange}>
-                <option disabled value={"chode a menu"}>
-                  Choose a Menu
-                </option>
+                <option value={"chode a menu"}>Choose a Menu</option>
                 {menus.map((menu) => {
                   return (
                     <option key={menu.idMenu} value={menu.idMenu}>

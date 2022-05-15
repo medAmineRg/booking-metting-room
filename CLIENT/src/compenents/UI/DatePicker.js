@@ -1,26 +1,39 @@
-import { addMinutes, setHours, setMinutes } from "date-fns";
+import {
+  addMinutes,
+  setHours,
+  setMinutes,
+  subDays,
+  addDays,
+  differenceInDays,
+} from "date-fns";
 import ReactDatePicker from "react-datepicker";
 
-const DatePicker = ({ selected, onChange, placeholder, exlaudeTime }) => {
-  exlaudeTime.push(setHours(setMinutes(new Date(), 30), 18));
-  const filterPassedTime = (time) => {
-    const currentDate = addMinutes(new Date(), 30);
-    const selectedDate = new Date(time);
+const DatePicker = ({
+  selected,
+  onChange,
+  placeholder,
+  start,
+  excludeTime,
+}) => {
+  if (start) excludeTime.push(start);
 
+  excludeTime.push(setHours(setMinutes(new Date(), 30), 18));
+  const filterPassedTime = (start) => {
+    const currentDate = addMinutes(new Date(), 30);
+    const selectedDate = new Date(start);
     return currentDate.getTime() < selectedDate.getTime();
   };
 
-  const excludeTimeFun = (exlaudeTime, start, end) => {
-    for (let i = start; i <= end; i++) {
-      exlaudeTime.push(
+  const excludeTimeFun = (excludeTime, str, end) => {
+    for (let i = str; i <= end; i++) {
+      excludeTime.push(
         setHours(setMinutes(new Date(), 0), i),
         setHours(setMinutes(new Date(), 30), i)
       );
     }
   };
-  excludeTimeFun(exlaudeTime, 0, 7);
-  excludeTimeFun(exlaudeTime, 19, 23);
-
+  excludeTimeFun(excludeTime, 0, 7);
+  excludeTimeFun(excludeTime, 19, 23);
   return (
     <ReactDatePicker
       selected={selected}
@@ -31,8 +44,19 @@ const DatePicker = ({ selected, onChange, placeholder, exlaudeTime }) => {
       minDate={new Date()}
       timeIntervals={30}
       className="form-control"
-      excludeTimes={exlaudeTime}
+      excludeTimes={excludeTime}
       placeholderText={placeholder}
+      excludeDateIntervals={
+        start && [
+          {
+            start: subDays(
+              new Date(start),
+              differenceInDays(new Date(start), new Date()) + 1
+            ),
+            end: addDays(new Date(start), -1),
+          },
+        ]
+      }
     />
   );
 };

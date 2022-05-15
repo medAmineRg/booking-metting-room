@@ -55,17 +55,20 @@ const getAllbookingsForOneUser = async (req, res) => {
 const getBookingByIdRoomUser = async (req, res) => {
   const { idRoom, idUser } = req.params;
   const result = filterCheck(idUser, idRoom);
-  if (!result.Creator && !result.idRoom) return res.status(400).send(result);
-  try {
-    const bookByUserRoom = await Booking.findAll({
+  let obj = {};
+  if (result) {
+    obj = {
       where: result,
-      // attributes: ["idBooking", "subject", "beginAt", "endAt", "description"],
-    });
+    };
+  }
+  try {
+    const bookByUserRoom = await Booking.findAll(result && obj);
     return res.status(200).send(bookByUserRoom);
   } catch (error) {
+    console.log(error);
     return res.status(400).send({
       api: "/bookings/idroom/iduser",
-      message: error.errors[0].message || "Can't filter booking",
+      message: "Can't filter booking",
       status: "Error",
       code: 400,
       method: "GET",
@@ -76,7 +79,15 @@ const getBookingByIdRoomUser = async (req, res) => {
 const addBooking = async (req, res) => {
   const idUser = req.user.idUser;
   const { idRoom, subject, description, beginAt, endAt } = req.body;
-
+  if (!idRoom) {
+    return res.status(400).json({
+      api: "/bookings",
+      code: 400,
+      message: "You have to provide the room!",
+      status: "Error",
+      method: "POST",
+    });
+  }
   const dateIsntValid = checkDate(beginAt, endAt);
   if (dateIsntValid)
     return res.status(400).json({
@@ -88,7 +99,6 @@ const addBooking = async (req, res) => {
     });
 
   const bookingAv = await checkForBookingAvailability(beginAt, endAt, idRoom);
-  console.log(bookingAv[0]);
   if (bookingAv[0])
     return res.status(400).json({
       message:
@@ -192,9 +202,10 @@ const updateBooking = async (req, res) => {
         "You can only update the booking before 2 hours from the starting time",
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       code: "400",
-      message: error.errors[0].message || "Can't update booking",
+      message: "Can't update booking",
       status: "Error",
       method: "PATCH",
       api: "/bookings",

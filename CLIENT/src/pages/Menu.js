@@ -13,8 +13,9 @@ import {
   reset,
   updateMenu,
 } from "../features/menu/menuSlice";
+import Spinner from "../compenents/UI/Spinner";
 const Menu = () => {
-  const { menus } = useSelector((state) => state.menus);
+  const { menus, isLoading } = useSelector((state) => state.menus);
   const allMenus = JSON.parse(localStorage.getItem("whereAt"));
   let showEditBtn = false;
   let showDeleteBtn = false;
@@ -97,6 +98,8 @@ const Menu = () => {
       dispatch(reset());
     };
   }, [dispatch]);
+  if (isLoading) return <Spinner />;
+
   return (
     <div className="container">
       {open && (
@@ -193,6 +196,7 @@ const Menu = () => {
                     [e.target.name]: e.target.value,
                   }))
                 }
+                defaultValue={menu.nameMenu}
               />
             </div>
             <div className="form-group">
@@ -201,6 +205,7 @@ const Menu = () => {
                 className="form-control"
                 placeholder="Path Menu"
                 name="Path"
+                defaultValue={menu.Path}
                 onChange={(e) =>
                   setMenu((pre) => ({
                     ...pre,
@@ -215,6 +220,7 @@ const Menu = () => {
                 className="form-control"
                 placeholder="Component"
                 name="component"
+                defaultValue={menu.component}
                 onChange={(e) =>
                   setMenu((pre) => ({
                     ...pre,

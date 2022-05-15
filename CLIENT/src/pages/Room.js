@@ -12,6 +12,7 @@ import {
   updateRoom as update,
   reset,
 } from "../features/room/roomSlice";
+import Spinner from "../compenents/UI/Spinner";
 const Room = () => {
   const menu = JSON.parse(localStorage.getItem("whereAt"));
   let showEditBtn = false;
@@ -33,7 +34,7 @@ const Room = () => {
     }
   };
   hasAuth();
-  const { rooms } = useSelector((state) => state.rooms);
+  const { rooms, isLoading } = useSelector((state) => state.rooms);
 
   const dispatch = useDispatch();
 
@@ -99,6 +100,7 @@ const Room = () => {
       dispatch(reset());
     };
   }, [dispatch]);
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="container">
@@ -163,6 +165,7 @@ const Room = () => {
                 placeholder="Room Name"
                 name="nameRoom"
                 onChange={onChange}
+                defaultValue={room.nameRoom}
               />
             </div>
             <div className="form-group">
@@ -172,6 +175,7 @@ const Room = () => {
                 placeholder="Type Room"
                 name="typeRoom"
                 onChange={onChange}
+                defaultValue={room.typeRoom}
               />
             </div>
             <div className="form-group">
@@ -181,6 +185,7 @@ const Room = () => {
                 placeholder="Capacity"
                 name="capacity"
                 onChange={onChange}
+                defaultValue={room.capacity}
               />
             </div>
           </section>

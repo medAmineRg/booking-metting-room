@@ -6,9 +6,10 @@ import Modal from "../compenents/UI/Modal";
 import { createBookings } from "../features/booking/bookSlice";
 import DatePicker from "../compenents/UI/DatePicker";
 import { toast } from "react-toastify";
+import Spinner from "../compenents/UI/Spinner";
 
 const SearchRoom = () => {
-  const { rooms } = useSelector((state) => state.rooms);
+  const { rooms, isLoading } = useSelector((state) => state.rooms);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,24 +35,32 @@ const SearchRoom = () => {
         description,
         idRoom: id,
       })
-    );
+    )
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message);
+        setShow(false);
+      })
+      .catch((e) => toast.error(e));
   };
-  let exlaudeTime = [];
-  let exlaudeHours;
+  let excludeTime = [];
+  let excludeHours;
   if (start) {
-    exlaudeHours = start.getHours();
+    excludeHours = start.getHours();
     for (let i = 1; i < 12; i++) {
-      if (exlaudeHours > 8) {
-        exlaudeTime.push(
-          setHours(setMinutes(new Date(), 30), exlaudeHours),
-          setHours(setMinutes(new Date(), 0), exlaudeHours)
+      excludeHours--;
+      if (excludeHours >= 8) {
+        excludeTime.push(
+          setHours(setMinutes(new Date(), 30), excludeHours),
+          setHours(setMinutes(new Date(), 0), excludeHours)
         );
-        exlaudeHours--;
       } else {
         break;
       }
     }
   }
+
+  if (isLoading) return <Spinner />;
 
   if (rooms.length) {
     return (
@@ -152,15 +161,16 @@ const SearchRoom = () => {
                   setStartDate(date);
                 }}
                 placeholder="Select Start"
-                exlaudeTime={exlaudeTime}
+                excludeTime={excludeTime}
               />
             </div>
             <div className="form-group">
               <DatePicker
                 selected={end}
                 onChange={(date) => setEndDate(date)}
-                exlaudeTime={exlaudeTime}
                 placeholder="Select End"
+                start={start}
+                excludeTime={excludeTime}
               />
             </div>
 

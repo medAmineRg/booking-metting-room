@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -19,6 +20,7 @@ import RolePerMenu from "./pages/RolePerMenu";
 import Menu from "./pages/Menu";
 import ProtectedRoutes from "./compenents/Auth/ProtectedRoutes";
 import NotFound from "./pages/NotFound";
+import Spinner from "./compenents/UI/Spinner";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -48,6 +50,8 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* Routes comming from DB */}
             {menus &&
               menus.map((menu, i) => {
                 return (
@@ -58,6 +62,8 @@ function App() {
                   />
                 );
               })}
+
+            {/* Routes for Autenficated users */}
             <Route
               element={
                 <ProtectedRoutes redirectPage="/login" isAllowed={!!user} />
@@ -65,7 +71,16 @@ function App() {
             >
               <Route path="/" element={<Dashboard />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
+
+            {/* catch any unvailable routes */}
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
           </Routes>
         </Router>
         <ToastContainer />

@@ -7,6 +7,7 @@ import {
   getBookingsByRoomUser,
   reset as resetBooking,
 } from "../../features/booking/bookSlice";
+import Spinner from "../UI/Spinner";
 import {
   reset as resetRooms,
   getRooms,
@@ -42,7 +43,7 @@ const localizer = dateFnsLocalizer({
 
 const MyCalendar = () => {
   const { user } = useSelector((state) => state.auth);
-  const { bookings } = useSelector((state) => state.book);
+  const { bookings, isLoading } = useSelector((state) => state.book);
   const { users } = useSelector((state) => state.users);
   const { rooms } = useSelector((state) => state.rooms);
 
@@ -156,16 +157,21 @@ const MyCalendar = () => {
       dispatch(resetUsers());
     };
   }, [user, navigate, dispatch, showFilterBtn]);
-
+  if (isLoading) return <Spinner />;
   return (
     <div className="container">
       {showFilterBtn && (
         <section className="filter">
           <div className="form-group" style={{ flexBasis: "40%" }}>
-            <select className="form-control" name="idRoom" onChange={filter}>
-              <option value="none" defaultValue>
-                Filter By Room
-              </option>
+            <h4>Choose a Room</h4>
+            <select
+              defaultValue={roomUser.idRoom}
+              className="form-control"
+              name="idRoom"
+              onChange={filter}
+            >
+              <option value="none">All</option>
+
               {rooms.map((room) => {
                 return (
                   <option key={room.idRoom} value={room.idRoom}>
@@ -175,15 +181,16 @@ const MyCalendar = () => {
               })}
             </select>
           </div>
-          <div
-            className="form-group"
-            style={{ flexBasis: "40%" }}
-            onChange={filter}
-          >
-            <select name="idUser" className="form-control">
-              <option value="none" defaultValue>
-                Filter By User
-              </option>
+          <div className="form-group" style={{ flexBasis: "40%" }}>
+            <h4>Choose a User</h4>
+            <select
+              defaultValue={roomUser.idUser}
+              name="idUser"
+              className="form-control"
+              onChange={filter}
+            >
+              <option value="none">All</option>
+
               {users.map((user) => {
                 return (
                   <option key={user.idUser} value={user.idUser}>
@@ -193,7 +200,10 @@ const MyCalendar = () => {
               })}
             </select>
           </div>
-          <div className="form-group">
+          <div
+            className="form-group"
+            style={{ alignSelf: "center", marginTop: "0.4rem" }}
+          >
             <button type="submit" className="btn btn-reverse" onClick={onClick}>
               Filter
             </button>
@@ -233,6 +243,7 @@ const MyCalendar = () => {
             <select
               className="form-control"
               name="idRoom"
+              defaultValue={roomUser.idRoom}
               onChange={(e) => {
                 console.log(e.target.value);
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value });
@@ -260,6 +271,7 @@ const MyCalendar = () => {
               onChange={(e) =>
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value })
               }
+              value={bookInfo.subject}
             />
           </div>
           <div className="form-group">
@@ -272,21 +284,12 @@ const MyCalendar = () => {
               onChange={(e) =>
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value })
               }
+              value={bookInfo.description}
             />
           </div>
         </Modal>
       )}
-      <div
-        style={
-          {
-            // height: "70vh",
-            // left: "360px",
-            // width: "900px",
-            // position: "absolute",
-            // top: "180px",
-          }
-        }
-      >
+      <div>
         <Calendar
           drilldownView="agenda"
           defaultDate={defaultDate}
