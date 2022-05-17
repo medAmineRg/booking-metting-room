@@ -26,7 +26,7 @@ function Login() {
     }
 
     if (isSuccess || user) {
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
     }
 
     return function cleanup() {

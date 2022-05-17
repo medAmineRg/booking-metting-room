@@ -174,10 +174,9 @@ const Booking = () => {
                       className="form-control"
                       name="idRoom"
                       onChange={onChange}
+                      value={book.Room.nameRoom}
                     >
-                      <option disabled selected>
-                        {book.Room.nameRoom}
-                      </option>
+                      <option disabled>{book.Room.nameRoom}</option>
                       {rooms.map((room) => {
                         return (
                           <option key={room.idRoom} value={room.idRoom}>
@@ -366,7 +365,7 @@ const Booking = () => {
                   <td>{new Date(book.endAt).toLocaleString("fr-FR")}</td>
                   <td>{book.description.substr(0, 15) + "..."}</td>
                   <td>
-                    {(showEditBtn || user.user.idUser === book.User.idUser) && (
+                    {(showEditBtn || user.user.idUser === book.Creator) && (
                       <button
                         onClick={() => {
                           setId(book.idBooking);

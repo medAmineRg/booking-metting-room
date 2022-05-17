@@ -8,21 +8,23 @@ import { IoTicketOutline } from "react-icons/io5";
 import { BsCalendarDate } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { FaUserShield } from "react-icons/fa";
+import { AiOutlineDashboard } from "react-icons/ai";
 
 function SideBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   let menus = user.user.Role.Menu;
-  const icons = [
-    <FaUserShield />,
-    <FaUserLock />,
-    <CgMenuRound />,
-    <FiUsers />,
-    <FaUsersCog />,
-    <MdMeetingRoom />,
-    <IoTicketOutline />,
-    <BsCalendarDate />,
-    <BsSearch />,
-  ];
+  const icons = {
+    Dashboard: <AiOutlineDashboard />,
+    Role: <FaUserShield />,
+    Permission: <FaUserLock />,
+    Menu: <CgMenuRound />,
+    User: <FiUsers />,
+    RolePerMenu: <FaUsersCog />,
+    Room: <MdMeetingRoom />,
+    Booking: <IoTicketOutline />,
+    MyCalendar: <BsCalendarDate />,
+    SearchRoom: <BsSearch />,
+  };
   return (
     <div className="sidebar">
       <ul className="sidbar_list">
@@ -39,7 +41,7 @@ function SideBar() {
                     localStorage.setItem("whereAt", JSON.stringify(menu));
                   }}
                 >
-                  {icons[i]}
+                  {icons[menu.component]}
                   <p style={{ paddingLeft: "1rem " }}>{menu.nameMenu}</p>
                 </div>
               </li>

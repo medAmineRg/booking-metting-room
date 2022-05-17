@@ -35,14 +35,30 @@ const hasAuth = (menu, per) => {
         });
       }
     } catch (error) {
-      console.log(error);
       return res.status(400).send({
         code: "400",
         status: "error",
-        message: error.errors[0].message || "Something went wrong!",
+        message: "Something went wrong!",
       });
     }
   };
 };
 
-module.exports = { auth, hasAuth };
+const hasUpdAuth = () => {
+  return async (req, res, next) => {
+    const booking = await Booking.findOne({
+      where: { idBooking: req.params.id },
+    });
+    if (booking.dataValues.Creator === req.user.idUser) {
+      next();
+    } else {
+      return res.status(401).send({
+        code: "401",
+        status: "unauthorized",
+        message: "You dont have authorization to do that!",
+      });
+    }
+  };
+};
+
+module.exports = { auth, hasAuth, hasUpdAuth };

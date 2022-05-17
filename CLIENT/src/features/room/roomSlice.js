@@ -28,6 +28,25 @@ export const getRooms = createAsyncThunk(
   }
 );
 
+// get rooms byname
+export const getRoomByName = createAsyncThunk(
+  "rooms/getRoomsByName",
+  async (name, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await roomService.getRoomByName(name, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const getAvailableRooms = createAsyncThunk(
   "rooms/getAvailableRooms",
   async (data, thunkAPI) => {
@@ -122,6 +141,18 @@ const roomSlice = createSlice({
         state.rooms = action.payload;
       })
       .addCase(getRooms.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(getRoomByName.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getRoomByName.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.rooms = action.payload.room;
+      })
+      .addCase(getRoomByName.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })

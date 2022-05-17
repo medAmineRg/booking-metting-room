@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAvailableRooms, reset } from "../features/room/roomSlice";
 import { setHours, setMinutes } from "date-fns";
@@ -79,8 +79,8 @@ const SearchRoom = () => {
           <tbody>
             {rooms.map((room) => {
               return (
-                <>
-                  <tr key={room.idRoom}>
+                <React.Fragment key={room.idRoom}>
+                  <tr>
                     <td></td>
                     <td>{room.idRoom}</td>
                     <td>{room.nameRoom}</td>
@@ -128,7 +128,7 @@ const SearchRoom = () => {
                       </div>
                     </Modal>
                   )}
-                </>
+                </React.Fragment>
               );
             })}
           </tbody>

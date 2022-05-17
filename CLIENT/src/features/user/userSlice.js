@@ -28,6 +28,24 @@ export const getUsers = createAsyncThunk(
     }
   }
 );
+// get user by name
+export const getUserByname = createAsyncThunk(
+  "users/get-user-byname",
+  async (fullName, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await userService.getUserByname(fullName, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 // create user
 export const createUser = createAsyncThunk(
@@ -125,6 +143,19 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(getUsers.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(getUserByname.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserByname.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.users = action.payload.users;
+        console.log(action.payload.users);
+      })
+      .addCase(getUserByname.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })

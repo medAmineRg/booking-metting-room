@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "../compenents/UI/Modal";
 import Pagination from "../compenents/UI/Pagination";
@@ -11,6 +10,7 @@ import {
   activeUser,
   createUser,
   deleteUser,
+  getUserByname,
   getUsers,
   reset as resetUser,
   updateUser,
@@ -49,6 +49,7 @@ const User = () => {
   const [ask, setAsk] = useState(false);
 
   const [newUser, setNewUser] = useState({});
+  const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
@@ -108,7 +109,6 @@ const User = () => {
   };
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const onChange = (e) => {
     setNewUser((prevData) => ({
@@ -124,9 +124,8 @@ const User = () => {
       dispatch(resetUser());
       dispatch(resetRole());
     };
-  }, [navigate, dispatch]);
+  }, [dispatch]);
   if (isLoading) return <Spinner />;
-  console.log(newUser);
   return (
     <div className="container">
       {open && (
@@ -276,15 +275,41 @@ const User = () => {
         </Modal>
       )}
       {showAddBtn && (
-        <div>
-          <button
-            className="btn btn-success"
-            onClick={() => {
-              setAdd(true);
-            }}
-          >
-            Add a User
-          </button>
+        <div className="filter search">
+          <div style={{ flexBasis: "50%" }}>
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                setAdd(true);
+              }}
+            >
+              Add a User
+            </button>
+          </div>
+          <div className="form-group" style={{ flexBasis: "40%" }}>
+            <input
+              name="user"
+              placeholder="search for user by fullname"
+              type="text"
+              className="form-control"
+              onChange={(e) => setSearch(e.target.value)}
+              defaultValue={search}
+            />
+          </div>
+          <div className="form-group" style={{ marginTop: "0.5rem" }}>
+            <button
+              type="submit"
+              className="btn btn-reverse"
+              onClick={() => {
+                dispatch(getUserByname(search.length === 0 ? "all" : search))
+                  .unwrap()
+                  .then((res) => toast.success(res.message))
+                  .catch((e) => toast.error(e));
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
       )}
       <table className="content-table">
@@ -300,13 +325,14 @@ const User = () => {
         </thead>
         <tbody>
           {users.slice(indexOfFirst, indexOfLast).map((user) => {
+            console.log(user);
             return (
               <tr key={user.idUser}>
                 <td></td>
                 <td>{user.fullName}</td>
                 <td>{user.email}</td>
                 <td>{user.phone ? user.phone : "Not Provided"}</td>
-                <td>{user.Role ? user.Role.nameRole : "Refresh"}</td>
+                <td>{user["Role.nameRole"]}</td>
                 <td>
                   {showEditBtn && (
                     <button

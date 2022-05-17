@@ -2,6 +2,7 @@ const Room = require("../models/Room");
 const { roomArentAvailable } = require("../services/bookingEntity");
 const { Op } = require("sequelize");
 const { checkDate } = require("../helpers/bookingHelper");
+const { getRoomByName } = require("../services/roomEntity");
 
 const GetRoom = async (req, res) => {
   try {
@@ -14,6 +15,28 @@ const GetRoom = async (req, res) => {
       code: 400,
       method: "GET",
       api: "rooms",
+    });
+  }
+};
+
+const GetRoomByName = async (req, res) => {
+  try {
+    const room = await getRoomByName(req.params.name);
+    return res.status(200).json({
+      status: "OK",
+      message: room.length + " room found",
+      room,
+      code: 200,
+      api: "/room/:name",
+      method: "get",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "Error",
+      message: "something went wrong try again",
+      code: 400,
+      method: "GET",
+      api: "room/:name",
     });
   }
 };
@@ -135,4 +158,5 @@ module.exports = {
   SearchRoom,
   UpdateRoom,
   DeleteRoom,
+  GetRoomByName,
 };

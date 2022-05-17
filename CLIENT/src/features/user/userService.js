@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/users";
+const API_URL = "http://localhost:5000/user";
 
 const getAllUsers = async (token) => {
   const config = {
@@ -10,6 +10,17 @@ const getAllUsers = async (token) => {
   };
 
   const response = await axios.get(API_URL, config);
+  return response.data;
+};
+
+const getUserByname = async (fullName, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(API_URL + `/${fullName}`, config);
   return response.data;
 };
 
@@ -65,6 +76,7 @@ const userService = {
   deleteUser,
   updateUser,
   activeAccount,
+  getUserByname,
 };
 
 export default userService;

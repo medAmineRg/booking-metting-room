@@ -9,10 +9,23 @@ const {
   checkPhoneExist,
   activateUserAccout,
   checkIdentity,
+  getUserByName,
 } = require("../services/userEntity");
 
 const Role = require("../models/Role");
 const User = require("../models/User");
+
+const GetUserByName = async (req, res) => {
+  let users = await getUserByName(req.params.name);
+  return res.status(200).json({
+    status: "OK",
+    message: users.length + " user found",
+    users,
+    code: 200,
+    api: "/user/get-user-byname",
+    method: "get",
+  });
+};
 
 const RegisterUser = async (req, res) => {
   let { fullName, email, phone, password, idLoc, idRole } = req.body;
@@ -286,7 +299,7 @@ const GetUsers = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       api: "users",
-      message: error.errors[0].message || "Can't get user",
+      message: "Can't get user",
       status: "Error",
       code: 400,
       method: "GET",
@@ -304,4 +317,5 @@ module.exports = {
   CreateUser,
   DeleteUser,
   ActiveAcount,
+  GetUserByName,
 };

@@ -15,7 +15,7 @@ const getAllbookings = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Error",
-      message: error.errors[0].message || "Can't get bookings",
+      message: "Can't get bookings",
       code: 400,
       api: "/bookings/all",
       method: "GET",
@@ -36,6 +36,7 @@ const getAllbookingsForOneUser = async (req, res) => {
         "beginAt",
         "endAt",
         "isCancled",
+        "Creator",
       ],
       raw: true,
     });

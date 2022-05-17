@@ -5,16 +5,18 @@ const {
   DeleteRoom,
   UpdateRoom,
   SearchRoom,
+  GetRoomByName,
 } = require("../controllers/Room");
 
 const { auth, hasAuth } = require("../middleware/auth");
 const router = express.Router();
 
 // room routs
-router.get("/rooms", auth, hasAuth(6, 2), GetRoom);
-router.post("/rooms", auth, hasAuth(6, 3), CreateRoom);
-router.post("/rooms/search-room", auth, hasAuth(6, 3), SearchRoom);
-router.patch("/rooms/:id", auth, hasAuth(6, 4), UpdateRoom);
-router.delete("/rooms/:id", auth, hasAuth(6, 5), DeleteRoom);
+router.get("/room", auth, hasAuth(7, 2), GetRoom);
+router.get("/room/:name", auth, hasAuth(7, 2), GetRoomByName);
+router.post("/room", auth, hasAuth(7, 3), CreateRoom);
+router.post("/room/search-room", auth, hasAuth(10, 2), SearchRoom);
+router.patch("/room/:id", auth, hasAuth(6, 4), UpdateRoom);
+router.delete("/room/:id", auth, hasAuth(6, 5), DeleteRoom);
 
 module.exports = router;

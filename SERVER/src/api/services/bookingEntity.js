@@ -39,6 +39,7 @@ const getBookings = async (idRole = "", idUser = "") => {
       "beginAt",
       "endAt",
       "isCancled",
+      "Creator",
     ],
     include: [Room, User],
   });

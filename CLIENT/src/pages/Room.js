@@ -11,8 +11,10 @@ import {
   getRooms,
   updateRoom as update,
   reset,
+  getRoomByName,
 } from "../features/room/roomSlice";
 import Spinner from "../compenents/UI/Spinner";
+import Pagination from "../compenents/UI/Pagination";
 const Room = () => {
   const menu = JSON.parse(localStorage.getItem("whereAt"));
   let showEditBtn = false;
@@ -44,6 +46,16 @@ const Room = () => {
   const [ask, setAsk] = useState(false);
 
   const [room, setRoom] = useState({});
+  const [search, setSearch] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(5);
+
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const addRoom = () => {
     dispatch(createRoom(room))
@@ -205,15 +217,41 @@ const Room = () => {
         </Modal>
       )}
       {showAddBtn && (
-        <div>
-          <button
-            className="btn btn-success"
-            onClick={() => {
-              setAdd(true);
-            }}
-          >
-            Add a Room
-          </button>
+        <div className="filter search">
+          <div style={{ flexBasis: "50%" }}>
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                setAdd(true);
+              }}
+            >
+              Add a Room
+            </button>
+          </div>
+          <div className="form-group" style={{ flexBasis: "40%" }}>
+            <input
+              name="user"
+              placeholder="search for room by name"
+              type="text"
+              className="form-control"
+              onChange={(e) => setSearch(e.target.value)}
+              defaultValue={search}
+            />
+          </div>
+          <div className="form-group" style={{ marginTop: "0.5rem" }}>
+            <button
+              type="submit"
+              className="btn btn-reverse"
+              onClick={() => {
+                dispatch(getRoomByName(search.length === 0 ? "all" : search))
+                  .unwrap()
+                  .then((res) => toast.success(res.message))
+                  .catch((e) => toast.error(e));
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
       )}
       <table className="content-table">
@@ -228,7 +266,7 @@ const Room = () => {
           </tr>
         </thead>
         <tbody>
-          {rooms.map((room) => {
+          {rooms.slice(indexOfFirst, indexOfLast).map((room) => {
             return (
               <tr key={room.idRoom}>
                 <td></td>
@@ -265,6 +303,11 @@ const Room = () => {
           })}
         </tbody>
       </table>
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={rooms.length}
+        paginate={paginate}
+      />
     </div>
   );
 };

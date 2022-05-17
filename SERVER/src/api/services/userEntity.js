@@ -11,6 +11,20 @@ const Menu = require("../models/Menu");
 const Role_Permission_Menu = require("../models/Role_Permission_Menu");
 const Permission = require("../models/Permission");
 
+const getUserByName = async (fullName) => {
+  const users = await User.findAll({
+    where: {
+      fullName: {
+        [Op.like]: !(fullName === "all") ? `%${fullName}%` : "%",
+      },
+    },
+    attributes: ["idUser", "email", "fullName", "phone", "activation"],
+    raw: true,
+    include: Role,
+  });
+  return users;
+};
+
 const getMenus = async (idRole) => {
   const menu = await Role_Permission_Menu.findAll({
     attributes: ["idPer"],
@@ -195,4 +209,5 @@ module.exports = {
   checkIdentity,
   getUserById,
   getMenus,
+  getUserByName,
 };

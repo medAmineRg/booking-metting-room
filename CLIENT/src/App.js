@@ -1,6 +1,11 @@
 import { Suspense } from "react";
 import { useSelector } from "react-redux";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyCalendar from "./compenents/Calendar/MyCalendar";
@@ -16,15 +21,16 @@ import Room from "./pages/Room";
 import Booking from "./pages/Bookings";
 import SearchRoom from "./pages/SearchRoom";
 import RolePerMenu from "./pages/RolePerMenu";
+import ProtectedRoutes from "./compenents/Auth/ProtectedRoutes";
 
 import Menu from "./pages/Menu";
-import ProtectedRoutes from "./compenents/Auth/ProtectedRoutes";
 import NotFound from "./pages/NotFound";
 import Spinner from "./compenents/UI/Spinner";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
   const arrComp = {
+    Dashboard: <Dashboard />,
     Permission: <Permission />,
     Role: <Role />,
     Menu: <Menu />,
@@ -52,6 +58,7 @@ function App() {
             <Route path="/register" element={<Register />} />
 
             {/* Routes comming from DB */}
+            {/* {menus && <Layout />} */}
             {menus &&
               menus.map((menu, i) => {
                 return (
@@ -69,7 +76,11 @@ function App() {
                 <ProtectedRoutes redirectPage="/login" isAllowed={!!user} />
               }
             >
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/"
+                element={<Navigate replace to={"/Dashboard"} />}
+              />
             </Route>
 
             {/* catch any unvailable routes */}

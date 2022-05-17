@@ -1,10 +1,15 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../compenents/UI/Spinner";
-function Dashboard() {
+const Dashboard = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
-  if (isLoading) return <Spinner />;
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user) return navigate("/login", { replace: true });
+  }, [navigate, user]);
+  if (isLoading) return <Spinner />;
   return (
     <div className="container flex-welcome">
       <div>
@@ -26,6 +31,6 @@ function Dashboard() {
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
