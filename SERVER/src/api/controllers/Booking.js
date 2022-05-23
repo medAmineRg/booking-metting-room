@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 const {
   checkForBookingAvailability,
   getBookings,
+  getBookingsByName,
 } = require("../services/bookingEntity.js");
 const { filterCheck } = require("../helpers/userHelper");
 
@@ -13,11 +14,39 @@ const getAllbookings = async (req, res) => {
     const allBookings = await getBookings(req.user.idRole, req.user.idUser);
     return res.status(200).send(allBookings);
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Error",
       message: "Can't get bookings",
       code: 400,
       api: "/bookings/all",
+      method: "GET",
+    });
+  }
+};
+
+const BookingByName = async (req, res) => {
+  try {
+    const allBookings = await getBookingsByName(
+      req.params.title,
+      req.user.idUser,
+      req.user.idRole
+    );
+    return res.status(200).json({
+      status: "OK",
+      message: allBookings.length + " Booking found",
+      bookings: allBookings,
+      code: 200,
+      api: "/booking/:title",
+      method: "get",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Error",
+      message: "Something went wrong!",
+      code: 400,
+      api: "/bookings/:title",
       method: "GET",
     });
   }
@@ -286,4 +315,5 @@ module.exports = {
   deleteBooking,
   getAllbookings,
   getBookingByIdRoomUser,
+  BookingByName,
 };

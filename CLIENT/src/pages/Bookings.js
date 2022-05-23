@@ -5,6 +5,7 @@ import Pagination from "../compenents/UI/Pagination";
 import { BiEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 import {
+  bookingsByName,
   createBookings,
   deleteBookings,
   getBookings,
@@ -16,32 +17,15 @@ import { getRooms, reset as resetRoom } from "../features/room/roomSlice";
 import { toast } from "react-toastify";
 import DatePicker from "../compenents/UI/DatePicker";
 import Spinner from "../compenents/UI/Spinner";
+import useAuth from "../hooks/has-auth";
 const Booking = () => {
   const { bookings, isLoading } = useSelector((state) => state.book);
   const { rooms } = useSelector((state) => state.rooms);
-
-  const menu = JSON.parse(localStorage.getItem("whereAt"));
   const user = JSON.parse(localStorage.getItem("user"));
+  // const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
+  const { currentMenu } = useSelector((state) => state.menus);
 
-  let showEditBtn = false;
-  let showDeleteBtn = false;
-  let showAddBtn = false;
-
-  const hasAuth = (menus = menu) => {
-    const per = menu.Permission;
-    for (let i = 0; i < per.length; i++) {
-      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-        showAddBtn = true;
-      }
-      if (per[i].namePer === "UPDATE" || per[i].namePer === "Garant All") {
-        showEditBtn = true;
-      }
-      if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
-        showDeleteBtn = true;
-      }
-    }
-  };
-  hasAuth();
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const [start, setStartDate] = useState();
   const [end, setEndDate] = useState();
@@ -51,6 +35,8 @@ const Booking = () => {
   const [id, setId] = useState(null);
   const [add, setAdd] = useState(false);
   const [ask, setAsk] = useState(false);
+
+  const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
@@ -174,12 +160,19 @@ const Booking = () => {
                       className="form-control"
                       name="idRoom"
                       onChange={onChange}
-                      value={book.Room.nameRoom}
+                      defaultValue={book.Room.nameRoom}
                     >
                       <option disabled>{book.Room.nameRoom}</option>
                       {rooms.map((room) => {
                         return (
-                          <option key={room.idRoom} value={room.idRoom}>
+                          <option
+                            // defaultValue={
+                            //   book.Room.nameRoom === room.nameRoom &&
+                            //   room.nameRoom
+                            // }
+                            key={room.idRoom}
+                            value={room.idRoom}
+                          >
                             {room.nameRoom}
                           </option>
                         );
@@ -321,16 +314,43 @@ const Booking = () => {
         </Modal>
       )}
       {showAddBtn && (
-        <div>
-          <button
-            className="btn btn-success"
-            onClick={() => {
-              setAdd(true);
-              dispatch(getRooms());
-            }}
-          >
-            Add a Booking
-          </button>
+        <div className="filter search">
+          <div style={{ flexBasis: "50%" }}>
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                setAdd(true);
+                dispatch(getRooms());
+              }}
+            >
+              Add a Booking
+            </button>
+          </div>
+
+          <div className="form-group" style={{ flexBasis: "40%" }}>
+            <input
+              name="user"
+              placeholder="search for a booking by Title"
+              type="text"
+              className="form-control"
+              onChange={(e) => setSearch(e.target.value)}
+              defaultValue={search}
+            />
+          </div>
+          <div className="form-group" style={{ marginTop: "0.5rem" }}>
+            <button
+              type="submit"
+              className="btn btn-reverse"
+              onClick={() => {
+                dispatch(bookingsByName(search.length === 0 ? "all" : search))
+                  .unwrap()
+                  .then((res) => toast.success(res.message))
+                  .catch((e) => toast.error(e));
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
       )}
       <table className="content-table">

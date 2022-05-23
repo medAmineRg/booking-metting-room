@@ -6,6 +6,7 @@ const {
   deleteBooking,
   cancelBooking,
   getBookingByIdRoomUser,
+  BookingByName,
 } = require("../controllers/Booking");
 
 const { auth, hasAuth, hasUpdAuth } = require("../middleware/auth");
@@ -20,6 +21,7 @@ const express = require("express"),
   router = express.Router();
 
 router.get("/bookings/all", auth, hasAuth(8, 2), getAllbookings);
+router.get("/bookings/:title", auth, hasAuth(8, 2), BookingByName);
 router.get("/bookings", auth, hasAuth(8, 2), getAllbookingsForOneUser);
 router.get(
   "/bookings/:idUser/:idRoom",

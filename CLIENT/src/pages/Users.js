@@ -17,31 +17,14 @@ import {
 } from "../features/user/userSlice";
 import { userSchemaReg } from "../Validation/UserValidation";
 import Spinner from "../compenents/UI/Spinner";
+import useAuth from "../hooks/has-auth";
 
 const User = () => {
   const { users, isLoading } = useSelector((state) => state.users);
   const { role: roles } = useSelector((state) => state.role);
 
-  const allMenus = JSON.parse(localStorage.getItem("whereAt"));
-  let showEditBtn = false;
-  let showDeleteBtn = false;
-  let showAddBtn = false;
-
-  const hasAuth = (menu = allMenus) => {
-    const per = menu.Permission;
-    for (let i = 0; i < per.length; i++) {
-      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-        showAddBtn = true;
-      }
-      if (per[i].namePer === "UPDATE" || per[i].namePer === "Garant All") {
-        showEditBtn = true;
-      }
-      if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
-        showDeleteBtn = true;
-      }
-    }
-  };
-  hasAuth();
+  const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(allMenus);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(null);

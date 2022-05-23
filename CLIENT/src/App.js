@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
@@ -8,24 +8,24 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MyCalendar from "./compenents/Calendar/MyCalendar";
 import SideBar from "./compenents/UI/SideBar";
 import Header from "./compenents/UI/Header";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Permission from "./pages/Permission";
-import Role from "./pages/Role";
-import User from "./pages/Users";
-import Room from "./pages/Room";
-import Booking from "./pages/Bookings";
-import SearchRoom from "./pages/SearchRoom";
-import RolePerMenu from "./pages/RolePerMenu";
+import Spinner from "./compenents/UI/Spinner";
 import ProtectedRoutes from "./compenents/Auth/ProtectedRoutes";
 
-import Menu from "./pages/Menu";
-import NotFound from "./pages/NotFound";
-import Spinner from "./compenents/UI/Spinner";
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Register = lazy(() => import("./pages/Register"));
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Permission = lazy(() => import("./pages/Permission"));
+const Role = lazy(() => import("./pages/Role"));
+const Menu = lazy(() => import("./pages/Menu"));
+const User = lazy(() => import("./pages/Users"));
+const RolePerMenu = lazy(() => import("./pages/RolePerMenu"));
+const Room = lazy(() => import("./pages/Room"));
+const Booking = lazy(() => import("./pages/Bookings"));
+const MyCalendar = lazy(() => import("./compenents/Calendar/MyCalendar"));
+const SearchRoom = lazy(() => import("./pages/SearchRoom"));
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -54,8 +54,22 @@ function App() {
           {user && <SideBar />}
           <Routes>
             {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/login"
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Login />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Register />
+                </Suspense>
+              }
+            />
 
             {/* Routes comming from DB */}
             {/* {menus && <Layout />} */}
@@ -65,7 +79,11 @@ function App() {
                   <Route
                     key={i}
                     path={menu.Path}
-                    element={arrComp[menu.component]}
+                    element={
+                      <Suspense fallback={<Spinner />}>
+                        {arrComp[menu.component]}
+                      </Suspense>
+                    }
                   />
                 );
               })}
@@ -76,7 +94,14 @@ function App() {
                 <ProtectedRoutes redirectPage="/login" isAllowed={!!user} />
               }
             >
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <Suspense fallback={<Spinner />}>
+                    <Dashboard />
+                  </Suspense>
+                }
+              />
               <Route
                 path="/"
                 element={<Navigate replace to={"/Dashboard"} />}

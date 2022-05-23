@@ -15,27 +15,9 @@ import {
 } from "../features/room/roomSlice";
 import Spinner from "../compenents/UI/Spinner";
 import Pagination from "../compenents/UI/Pagination";
+import useAuth from "../hooks/has-auth";
 const Room = () => {
-  const menu = JSON.parse(localStorage.getItem("whereAt"));
-  let showEditBtn = false;
-  let showDeleteBtn = false;
-  let showAddBtn = false;
-
-  const hasAuth = (menus = menu) => {
-    const per = menu.Permission;
-    for (let i = 0; i < per.length; i++) {
-      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-        showAddBtn = true;
-      }
-      if (per[i].namePer === "UPDATE" || per[i].namePer === "Garant All") {
-        showEditBtn = true;
-      }
-      if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
-        showDeleteBtn = true;
-      }
-    }
-  };
-  hasAuth();
+  const [menu] = useState(JSON.parse(localStorage.getItem("whereAt")));
   const { rooms, isLoading } = useSelector((state) => state.rooms);
 
   const dispatch = useDispatch();
@@ -50,6 +32,8 @@ const Room = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
+
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(menu);
 
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
@@ -105,7 +89,6 @@ const Room = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
   useEffect(() => {
     dispatch(getRooms());
     return function cleanup() {
@@ -216,8 +199,9 @@ const Room = () => {
           </p>
         </Modal>
       )}
-      {showAddBtn && (
-        <div className="filter search">
+
+      <div className="filter search">
+        {showAddBtn && (
           <div style={{ flexBasis: "50%" }}>
             <button
               className="btn btn-success"
@@ -228,32 +212,33 @@ const Room = () => {
               Add a Room
             </button>
           </div>
-          <div className="form-group" style={{ flexBasis: "40%" }}>
-            <input
-              name="user"
-              placeholder="search for room by name"
-              type="text"
-              className="form-control"
-              onChange={(e) => setSearch(e.target.value)}
-              defaultValue={search}
-            />
-          </div>
-          <div className="form-group" style={{ marginTop: "0.5rem" }}>
-            <button
-              type="submit"
-              className="btn btn-reverse"
-              onClick={() => {
-                dispatch(getRoomByName(search.length === 0 ? "all" : search))
-                  .unwrap()
-                  .then((res) => toast.success(res.message))
-                  .catch((e) => toast.error(e));
-              }}
-            >
-              Search
-            </button>
-          </div>
+        )}
+        <div className="form-group" style={{ flexBasis: "40%" }}>
+          <input
+            name="user"
+            placeholder="search for room by name"
+            type="text"
+            className="form-control"
+            onChange={(e) => setSearch(e.target.value)}
+            defaultValue={search}
+          />
         </div>
-      )}
+        <div className="form-group" style={{ marginTop: "0.5rem" }}>
+          <button
+            type="submit"
+            className="btn btn-reverse"
+            onClick={() => {
+              dispatch(getRoomByName(search.length === 0 ? "all" : search))
+                .unwrap()
+                .then((res) => toast.success(res.message))
+                .catch((e) => toast.error(e));
+            }}
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
       <table className="content-table">
         <thead>
           <tr>

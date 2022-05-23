@@ -15,6 +15,7 @@ import {
   reset,
 } from "../features/RolePerMenu/rolePerMenuSlice";
 import Spinner from "../compenents/UI/Spinner";
+import useAuth from "../hooks/has-auth";
 
 const RolePerMenu = () => {
   const { rolePerMenu, isLoading } = useSelector((state) => state.rolePerMenu);
@@ -22,23 +23,9 @@ const RolePerMenu = () => {
   const { menus } = useSelector((state) => state.menus);
   const { permission } = useSelector((state) => state.per);
 
-  const allMenus = JSON.parse(localStorage.getItem("whereAt"));
-  let showDeleteBtn = false;
-  let showAddBtn = false;
+  const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
 
-  const hasAuth = (menu = allMenus) => {
-    const per = menu.Permission;
-    for (let i = 0; i < per.length; i++) {
-      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-        showAddBtn = true;
-      }
-
-      if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
-        showDeleteBtn = true;
-      }
-    }
-  };
-  hasAuth();
+  const { showAddBtn, showDeleteBtn } = useAuth(allMenus);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(null);

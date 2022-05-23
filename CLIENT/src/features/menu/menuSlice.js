@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import menuService from "./menuService";
 
+const whereAt = JSON.parse(localStorage.getItem("whereAt"));
+
 const initialState = {
   menus: [],
   isError: false,
@@ -8,6 +10,7 @@ const initialState = {
   isLoading: false,
   isPending: false,
   message: "",
+  currentMenu: whereAt ? whereAt : null,
 };
 
 // get menus
@@ -93,6 +96,9 @@ const menuSlice = createSlice({
     reset: (state) => {
       return initialState;
     },
+    currentMenu: (state, action) => {
+      state.currentMenu = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -150,5 +156,5 @@ const menuSlice = createSlice({
   },
 });
 
-export const { reset } = menuSlice.actions;
+export const { reset, currentMenu } = menuSlice.actions;
 export default menuSlice.reducer;

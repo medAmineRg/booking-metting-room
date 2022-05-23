@@ -30,6 +30,25 @@ export const getBookings = createAsyncThunk(
   }
 );
 
+// get all bookings by name
+export const bookingsByName = createAsyncThunk(
+  "bookings/title",
+  async (title, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await bookService.getBookingByName(title, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // get all bookings by Room User
 export const getBookingsByRoomUser = createAsyncThunk(
   "bookings/filter",
@@ -124,6 +143,18 @@ export const bookSlice = createSlice({
         state.bookings = action.payload;
       })
       .addCase(getBookings.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(bookingsByName.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(bookingsByName.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.bookings = action.payload.bookings;
+      })
+      .addCase(bookingsByName.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })

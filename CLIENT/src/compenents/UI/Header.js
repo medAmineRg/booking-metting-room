@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FaSignInAlt, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, reset } from "../../features/auth/authSlice";
+import { logout, reset as resetUser } from "../../features/auth/authSlice";
+import { reset } from "../../features/menu/menuSlice";
 import "./Header.css";
 
 function Header() {
@@ -11,6 +12,7 @@ function Header() {
 
   const onLogout = () => {
     dispatch(logout());
+    dispatch(resetUser());
     dispatch(reset());
     navigate("/login");
   };

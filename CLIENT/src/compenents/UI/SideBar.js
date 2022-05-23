@@ -9,10 +9,13 @@ import { BsCalendarDate } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { FaUserShield } from "react-icons/fa";
 import { AiOutlineDashboard } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { currentMenu } from "../../features/menu/menuSlice";
 
 function SideBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   let menus = user.user.Role.Menu;
+  let dispatch = useDispatch();
   const icons = {
     Dashboard: <AiOutlineDashboard />,
     Role: <FaUserShield />,
@@ -39,6 +42,7 @@ function SideBar() {
                   className="sidebar_list-menu"
                   onClick={() => {
                     localStorage.setItem("whereAt", JSON.stringify(menu));
+                    dispatch(currentMenu(menu));
                   }}
                 >
                   {icons[menu.component]}

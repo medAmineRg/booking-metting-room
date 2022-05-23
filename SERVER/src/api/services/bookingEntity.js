@@ -29,9 +29,9 @@ const roomArentAvailable = async (begin, end) => {
 };
 
 const getBookings = async (idRole = "", idUser = "") => {
-  // let resUser = idRole === 1 ? {} : { Creator: idUser };
-
+  let condition = idRole !== 1 ? { Creator: { [Op.eq]: idUser } } : {};
   let allBookings = await Booking.findAll({
+    where: condition,
     attributes: [
       "idBooking",
       "subject",
@@ -41,7 +41,33 @@ const getBookings = async (idRole = "", idUser = "") => {
       "isCancled",
       "Creator",
     ],
-    include: [Room, User],
+    include: [
+      { model: Room, attributes: ["nameRoom"] },
+      { model: User, attributes: ["fullName"] },
+    ],
+  });
+  return allBookings;
+};
+
+const getBookingsByName = async (title, idUser, idRole) => {
+  let condition = idRole !== 1 ? { Creator: { [Op.eq]: idUser } } : {};
+  condition.subject = { [Op.like]: !(title === "all") ? `%${title}%` : "%" };
+  console.log(condition);
+  let allBookings = await Booking.findAll({
+    where: condition,
+    attributes: [
+      "idBooking",
+      "subject",
+      "description",
+      "beginAt",
+      "endAt",
+      "isCancled",
+      "Creator",
+    ],
+    include: [
+      { model: Room, attributes: ["nameRoom"] },
+      { model: User, attributes: ["fullName"] },
+    ],
   });
   return allBookings;
 };
@@ -50,4 +76,5 @@ module.exports = {
   checkForBookingAvailability,
   getBookings,
   roomArentAvailable,
+  getBookingsByName,
 };

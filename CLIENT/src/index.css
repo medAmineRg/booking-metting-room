@@ -247,7 +247,6 @@ li a:hover {
   margin-bottom: 30px;
   width: 100%;
   display: flex;
-  justify-content: space-between;
 }
 
 .filter .form-group {

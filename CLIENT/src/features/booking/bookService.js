@@ -13,6 +13,17 @@ const getBooking = async (token) => {
   return response.data;
 };
 
+const getBookingByName = async (title, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(API_URL + `${"/" + title}`, config);
+  return response.data;
+};
+
 const createBooking = async (data, token) => {
   const config = {
     headers: {
@@ -69,6 +80,7 @@ const bookService = {
   filterBooking,
   updateBooking,
   deleteBooking,
+  getBookingByName,
 };
 
 export default bookService;
