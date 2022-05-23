@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../compenents/UI/Spinner";
 const Dashboard = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
 
   useEffect(() => {

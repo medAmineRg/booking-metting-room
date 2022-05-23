@@ -17,8 +17,10 @@ import Spinner from "../compenents/UI/Spinner";
 import Pagination from "../compenents/UI/Pagination";
 import useAuth from "../hooks/has-auth";
 const Room = () => {
-  const [menu] = useState(JSON.parse(localStorage.getItem("whereAt")));
   const { rooms, isLoading } = useSelector((state) => state.rooms);
+
+  const { currentMenu } = useSelector((state) => state.menus);
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const dispatch = useDispatch();
 
@@ -32,8 +34,6 @@ const Room = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
-
-  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(menu);
 
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;

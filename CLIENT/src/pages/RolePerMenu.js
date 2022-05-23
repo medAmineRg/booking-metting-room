@@ -23,9 +23,9 @@ const RolePerMenu = () => {
   const { menus } = useSelector((state) => state.menus);
   const { permission } = useSelector((state) => state.per);
 
-  const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
+  const { currentMenu } = useSelector((state) => state.menus);
 
-  const { showAddBtn, showDeleteBtn } = useAuth(allMenus);
+  const { showAddBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(null);

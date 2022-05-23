@@ -17,9 +17,8 @@ import useAuth from "../hooks/has-auth";
 
 const Role = () => {
   const { role, isLoading } = useSelector((state) => state.role);
-  const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
-
-  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(allMenus);
+  const { currentMenu } = useSelector((state) => state.menus);
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const [id, setId] = useState(null);
 

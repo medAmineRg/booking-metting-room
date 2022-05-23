@@ -28,6 +28,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../UI/Modal";
 import arMa from "date-fns/locale/ar-MA";
 import { toast } from "react-toastify";
+import useAuth from "../../hooks/has-auth";
 
 const locales = {
   "ar-MA": arMa,
@@ -47,6 +48,9 @@ const MyCalendar = () => {
   const { users } = useSelector((state) => state.users);
   const { rooms } = useSelector((state) => state.rooms);
 
+  const { currentMenu } = useSelector((state) => state.menus);
+  const { showEditBtn: showFilterBtn } = useAuth(currentMenu);
+
   let min = new Date();
   min.setHours(8);
   min.setMinutes(0);
@@ -61,20 +65,6 @@ const MyCalendar = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const allMenus = JSON.parse(localStorage.getItem("whereAt"));
-  let showFilterBtn = false;
-
-  const hasAuth = (menu = allMenus) => {
-    const per = menu.Permission;
-    for (let i = 0; i < per.length; i++) {
-      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-        showFilterBtn = true;
-        break;
-      }
-    }
-  };
-  hasAuth();
 
   const events = [];
 

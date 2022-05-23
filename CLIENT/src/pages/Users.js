@@ -23,8 +23,8 @@ const User = () => {
   const { users, isLoading } = useSelector((state) => state.users);
   const { role: roles } = useSelector((state) => state.role);
 
-  const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
-  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(allMenus);
+  const { currentMenu } = useSelector((state) => state.menus);
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(null);
