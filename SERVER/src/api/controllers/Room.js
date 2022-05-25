@@ -75,7 +75,7 @@ const SearchRoom = async (req, res) => {
     const availableRoom = await Room.findAll({
       where: {
         idRoom: { [Op.not]: idRoom },
-        capacity: { [Op.gt]: req.body.capacity },
+        capacity: { [Op.gte]: req.body.capacity },
       },
       attributes: ["idRoom", "typeRoom", "capacity", "nameRoom"],
       raw: true,

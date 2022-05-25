@@ -49,8 +49,7 @@ const MyCalendar = () => {
   const { rooms } = useSelector((state) => state.rooms);
 
   const { currentMenu } = useSelector((state) => state.menus);
-  const { showEditBtn: showFilterBtn } = useAuth(currentMenu);
-
+  const { showAddBtn } = useAuth(currentMenu);
   let min = new Date();
   min.setHours(8);
   min.setMinutes(0);
@@ -136,7 +135,7 @@ const MyCalendar = () => {
     }
 
     dispatch(getBookings());
-    if (showFilterBtn) {
+    if (showAddBtn) {
       dispatch(getUsers());
       dispatch(getRooms());
     }
@@ -146,11 +145,11 @@ const MyCalendar = () => {
       dispatch(resetRooms());
       dispatch(resetUsers());
     };
-  }, [user, navigate, dispatch, showFilterBtn]);
+  }, [user, navigate, dispatch, showAddBtn]);
   if (isLoading) return <Spinner />;
   return (
     <div className="container">
-      {showFilterBtn && (
+      {showAddBtn && (
         <section className="filter">
           <div className="form-group" style={{ flexBasis: "40%" }}>
             <h4>Choose a Room</h4>
@@ -284,7 +283,7 @@ const MyCalendar = () => {
           drilldownView="agenda"
           defaultDate={defaultDate}
           culture={enUS}
-          selectable={showFilterBtn}
+          selectable={showAddBtn}
           defaultView={Views.DAY}
           views={["week", "month", "day", "agenda"]}
           localizer={localizer}

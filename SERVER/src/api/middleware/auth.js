@@ -1,6 +1,7 @@
 const { verifyToken } = require("../helpers/userHelper");
 const Booking = require("../models/Booking");
 const { getUserById, permissionExist } = require("../services/userEntity");
+
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");

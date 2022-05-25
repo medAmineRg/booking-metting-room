@@ -230,7 +230,11 @@ const User = () => {
             </div>
             <div className="form-group">
               <label>Role</label>
-              <select name="idRole" onChange={onChange}>
+              <select
+                name="idRole"
+                onChange={onChange}
+                defaultValue={newUser.idRole}
+              >
                 <option>Choose a Role</option>
                 {roles.map((role) => {
                   return (
@@ -308,7 +312,6 @@ const User = () => {
         </thead>
         <tbody>
           {users.slice(indexOfFirst, indexOfLast).map((user) => {
-            console.log(user);
             return (
               <tr key={user.idUser}>
                 <td></td>

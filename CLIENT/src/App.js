@@ -24,7 +24,7 @@ const User = lazy(() => import("./pages/Users"));
 const RolePerMenu = lazy(() => import("./pages/RolePerMenu"));
 const Room = lazy(() => import("./pages/Room"));
 const Booking = lazy(() => import("./pages/Bookings"));
-const MyCalendar = lazy(() => import("./compenents/Calendar/MyCalendar"));
+const Calendar = lazy(() => import("./pages/Calendar"));
 const SearchRoom = lazy(() => import("./pages/SearchRoom"));
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
     RolePerMenu: <RolePerMenu />,
     Room: <Room />,
     Booking: <Booking />,
-    MyCalendar: <MyCalendar />,
+    MyCalendar: <Calendar />,
     SearchRoom: <SearchRoom />,
   };
   let menus;

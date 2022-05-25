@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import DatePicker from "../compenents/UI/DatePicker";
 import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
+
 const Booking = () => {
   const { bookings, isLoading } = useSelector((state) => state.book);
   const { rooms } = useSelector((state) => state.rooms);

@@ -8,6 +8,8 @@ import {
 } from "date-fns";
 import ReactDatePicker from "react-datepicker";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 const DatePicker = ({
   selected,
   onChange,

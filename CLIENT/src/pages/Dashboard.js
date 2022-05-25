@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Spinner from "../compenents/UI/Spinner";
 const Dashboard = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
@@ -22,14 +22,14 @@ const Dashboard = () => {
           <b>Our app will help you book a metting room easily!</b>
         </p>
       </div>
-      <div className="container-btn">
+      {/* <div className="container-btn">
         <Link className="btn btn-success" to={"/search-room"}>
           Book A Room
         </Link>
         <Link className="btn btn-warning" to={"/calendar"}>
           Go To the Calendar
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

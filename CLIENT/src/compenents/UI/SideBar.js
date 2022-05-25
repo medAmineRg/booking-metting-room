@@ -40,9 +40,9 @@ function SideBar() {
               >
                 <div
                   className="sidebar_list-menu"
-                  onClick={() => {
+                  onClick={async () => {
                     localStorage.setItem("whereAt", JSON.stringify(menu));
-                    dispatch(currentMenu(menu));
+                    await dispatch(currentMenu(menu));
                   }}
                 >
                   {icons[menu.component]}

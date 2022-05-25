@@ -182,6 +182,15 @@ const CreateUser = async (req, res) => {
   let { fullName, email, phone, password, idLoc, idRole } = req.body;
 
   const emailExistingMsg = await checkEmailExist(email);
+  if (!isNaN(fullName)) {
+    return res.status(400).json({
+      api: "/users",
+      message: "Fullname must contain only letters",
+      status: "Error",
+      code: 400,
+      method: "POST",
+    });
+  }
   if (emailExistingMsg) {
     return res.status(400).json({
       api: "/users",

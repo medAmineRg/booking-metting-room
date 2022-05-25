@@ -37,6 +37,10 @@ const User = db.define(
           args: [10],
           msg: "Phone length must be 10 numbers",
         },
+        isInt: {
+          args: true,
+          msg: "Phone must be a number",
+        },
       },
     },
     isActive: {

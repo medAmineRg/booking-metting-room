@@ -16,6 +16,10 @@ const logout = () => {
 const login = async (userData) => {
   const response = await axios.post(API_URL + "login", userData);
   localStorage.setItem("user", JSON.stringify(response.data));
+  localStorage.setItem(
+    "whereAt",
+    JSON.stringify(response.data.user.Role.Menu[0])
+  );
   return response.data;
 };
 
