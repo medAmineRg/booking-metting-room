@@ -12,18 +12,19 @@ import {
   reset as resetBooking,
   updateBooking,
 } from "../features/booking/bookSlice";
-import { setHours, setMinutes } from "date-fns";
+import { setHours, setMinutes, addMinutes } from "date-fns";
 import { getRooms, reset as resetRoom } from "../features/room/roomSlice";
 import { toast } from "react-toastify";
 import DatePicker from "../compenents/UI/DatePicker";
 import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Booking = () => {
   const { bookings, isLoading } = useSelector((state) => state.book);
   const { rooms } = useSelector((state) => state.rooms);
   const user = JSON.parse(localStorage.getItem("user"));
-  // const [allMenus] = useState(JSON.parse(localStorage.getItem("whereAt")));
   const { currentMenu } = useSelector((state) => state.menus);
 
   const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
@@ -55,6 +56,12 @@ const Booking = () => {
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const filterPassedTime = (start) => {
+    const currentDate = addMinutes(new Date(), 30);
+    const selectedDate = new Date(start);
+    return currentDate.getTime() < selectedDate.getTime();
+  };
 
   const createBooking = () => {
     dispatch(createBookings({ beginAt: start, endAt: end, ...booking }))
@@ -107,18 +114,42 @@ const Booking = () => {
   let exlaudeHours;
   if (start) {
     exlaudeHours = start.getHours();
+    let min = start.getMinutes();
+    console.log(min);
     for (let i = 1; i < 12; i++) {
-      if (exlaudeHours > 8) {
+      if (i === 1) {
+        excludeTime.push(start);
+        if (min === 30) {
+          excludeTime.push(
+            setHours(setMinutes(new Date(start), 0), exlaudeHours)
+          );
+        }
+        exlaudeHours--;
+      } else if (exlaudeHours >= 8) {
         excludeTime.push(
-          setHours(setMinutes(new Date(), 30), exlaudeHours),
-          setHours(setMinutes(new Date(), 0), exlaudeHours)
+          setHours(setMinutes(new Date(start), 0), exlaudeHours),
+          setHours(setMinutes(new Date(start), 30), exlaudeHours)
         );
         exlaudeHours--;
       } else {
         break;
       }
     }
+    console.log(excludeTime, new Date(start));
   }
+
+  const excludeTimeFun = (excludeTime, str, end) => {
+    for (let i = str; i <= end; i++) {
+      excludeTime.push(
+        setHours(setMinutes(new Date(), 0), i),
+        setHours(setMinutes(new Date(), 30), i)
+      );
+    }
+    excludeTime.push(setHours(setMinutes(new Date(), 30), 18));
+  };
+  excludeTimeFun(excludeTime, 0, 7);
+  excludeTimeFun(excludeTime, 19, 23);
+
   useEffect(() => {
     dispatch(getBookings());
     dispatch(getRooms());
@@ -201,25 +232,37 @@ const Booking = () => {
                       onChange={onChange}
                     />
                   </div>
-
                   <div className="form-group">
-                    <DatePicker
+                    <ReactDatePicker
                       selected={start}
-                      onChange={(date) => {
-                        setStartDate(date);
-                      }}
-                      placeholder={new Date(book.beginAt).toLocaleString(
+                      onChange={(date) => setStartDate(date)}
+                      showTimeSelect
+                      filterTime={filterPassedTime}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      minDate={new Date()}
+                      timeIntervals={30}
+                      className="form-control"
+                      excludeTimes={excludeTime}
+                      placeholderText={new Date(book.beginAt).toLocaleString(
                         "fr-FR"
                       )}
-                      excludeTime={excludeTime}
                     />
                   </div>
                   <div className="form-group">
-                    <DatePicker
+                    <ReactDatePicker
+                      disabled={start ? false : true}
                       selected={end}
                       onChange={(date) => setEndDate(date)}
-                      placeholder={new Date(book.endAt).toLocaleString("fr-FR")}
-                      excludeTime={excludeTime}
+                      showTimeSelect
+                      filterTime={filterPassedTime}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      minDate={new Date()}
+                      timeIntervals={30}
+                      className="form-control"
+                      excludeTimes={excludeTime}
+                      placeholderText={new Date(book.endAt).toLocaleString(
+                        "fr-FR"
+                      )}
                     />
                   </div>
                 </section>
@@ -280,22 +323,38 @@ const Booking = () => {
             </div>
 
             <div className="form-group">
-              <DatePicker
+              <ReactDatePicker
                 selected={start}
-                onChange={(date) => {
-                  setStartDate(date);
-                }}
-                placeholder="Select Start"
-                excludeTime={excludeTime}
+                onChange={(date) => setStartDate(date)}
+                showTimeSelect
+                filterTime={filterPassedTime}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={new Date()}
+                timeIntervals={30}
+                className="form-control"
+                excludeTimes={excludeTime}
+                placeholderText={"Select Start Date"}
               />
             </div>
 
-            <div className="form-group">
-              <DatePicker
+            <div
+              className="form-group"
+              onClick={() => {
+                if (!start) toast.error("select start date first");
+              }}
+            >
+              <ReactDatePicker
+                disabled={start ? false : true}
                 selected={end}
                 onChange={(date) => setEndDate(date)}
-                excludeTime={excludeTime}
-                placeholder="Select End"
+                showTimeSelect
+                filterTime={filterPassedTime}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={new Date(start)}
+                timeIntervals={30}
+                className="form-control"
+                excludeTimes={excludeTime}
+                placeholderText={"Select End Date"}
               />
             </div>
           </section>

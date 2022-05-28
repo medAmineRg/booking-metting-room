@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAvailableRooms, reset } from "../features/room/roomSlice";
-import { setHours, setMinutes } from "date-fns";
+import { setHours, setMinutes, addMinutes } from "date-fns";
 import Modal from "../compenents/UI/Modal";
 import { createBookings } from "../features/booking/bookSlice";
-import DatePicker from "../compenents/UI/DatePicker";
 import { toast } from "react-toastify";
 import Spinner from "../compenents/UI/Spinner";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const SearchRoom = () => {
   const { rooms, isLoading } = useSelector((state) => state.rooms);
   const dispatch = useDispatch();
+
+  const filterPassedTime = (start) => {
+    const currentDate = addMinutes(new Date(), 30);
+    const selectedDate = new Date(start);
+    return currentDate.getTime() < selectedDate.getTime();
+  };
 
   useEffect(() => {
     return function cleanup() {
@@ -43,23 +50,46 @@ const SearchRoom = () => {
       })
       .catch((e) => toast.error(e));
   };
+
   let excludeTime = [];
-  let excludeHours;
+  let exlaudeHours;
   if (start) {
-    excludeHours = start.getHours();
+    exlaudeHours = start.getHours();
+    let min = start.getMinutes();
+    console.log(min);
     for (let i = 1; i < 12; i++) {
-      excludeHours--;
-      if (excludeHours >= 8) {
+      if (i === 1) {
+        excludeTime.push(start);
+        if (min === 30) {
+          excludeTime.push(
+            setHours(setMinutes(new Date(start), 0), exlaudeHours)
+          );
+        }
+        exlaudeHours--;
+      } else if (exlaudeHours >= 8) {
         excludeTime.push(
-          setHours(setMinutes(new Date(), 30), excludeHours),
-          setHours(setMinutes(new Date(), 0), excludeHours)
+          setHours(setMinutes(new Date(start), 0), exlaudeHours),
+          setHours(setMinutes(new Date(start), 30), exlaudeHours)
         );
+        exlaudeHours--;
       } else {
         break;
       }
     }
+    console.log(excludeTime, new Date(start));
   }
 
+  const excludeTimeFun = (excludeTime, str, end) => {
+    for (let i = str; i <= end; i++) {
+      excludeTime.push(
+        setHours(setMinutes(new Date(), 0), i),
+        setHours(setMinutes(new Date(), 30), i)
+      );
+    }
+    excludeTime.push(setHours(setMinutes(new Date(), 30), 18));
+  };
+  excludeTimeFun(excludeTime, 0, 7);
+  excludeTimeFun(excludeTime, 19, 23);
   if (isLoading) return <Spinner />;
 
   if (rooms.length) {
@@ -155,22 +185,46 @@ const SearchRoom = () => {
             }}
           >
             <div className="form-group">
-              <DatePicker
+              <ReactDatePicker
                 selected={start}
-                onChange={(date) => {
-                  setStartDate(date);
-                }}
-                placeholder="Select Start"
-                excludeTime={excludeTime}
+                onChange={(date) => setStartDate(date)}
+                showTimeSelect
+                filterTime={filterPassedTime}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={new Date()}
+                timeIntervals={30}
+                className="form-control"
+                excludeTimes={excludeTime}
+                placeholderText={"Select Start Date"}
               />
             </div>
-            <div className="form-group">
-              <DatePicker
+            <div
+              className="form-group"
+              onClick={() => {
+                if (!start) toast.error("select start date first");
+              }}
+            >
+              <ReactDatePicker
+                disabled={start ? false : true}
                 selected={end}
                 onChange={(date) => setEndDate(date)}
-                placeholder="Select End"
-                start={start}
-                excludeTime={excludeTime}
+                showTimeSelect
+                filterTime={filterPassedTime}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={new Date(start)}
+                timeIntervals={30}
+                className="form-control"
+                excludeTimes={excludeTime}
+                placeholderText={"Select End Date"}
+                // excludeDateIntervals={[
+                //   {
+                //     start: subDays(
+                //       new Date(start),
+                //       differenceInDays(new Date(start), new Date()) + 1
+                //     ),
+                //     end: addDays(new Date(start), -1),
+                //   },
+                // ]}
               />
             </div>
 

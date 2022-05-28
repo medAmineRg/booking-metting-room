@@ -2,7 +2,7 @@ const checkDate = (start, end) => {
   let today = new Date();
   start = new Date(start);
   end = new Date(end);
-  if (today > start || start > end) {
+  if (today > start || start >= end) {
     return "Enter a valid Time";
   }
 

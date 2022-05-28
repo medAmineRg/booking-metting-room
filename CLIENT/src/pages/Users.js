@@ -318,7 +318,7 @@ const User = () => {
                 <td>{user.fullName}</td>
                 <td>{user.email}</td>
                 <td>{user.phone ? user.phone : "Not Provided"}</td>
-                <td>{user["Role.nameRole"]}</td>
+                <td>{user.Role.nameRole}</td>
                 <td>
                   {showEditBtn && (
                     <button

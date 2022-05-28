@@ -2,7 +2,11 @@ const useAuth = (menu) => {
   let showEditBtn = false;
   let showDeleteBtn = false;
   let showAddBtn = false;
-  const per = menu.Permission;
+
+  let per;
+  if (menu.Permission) {
+    per = menu.Permission;
+  }
   for (let i = 0; i < per.length; i++) {
     if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
       showAddBtn = true;

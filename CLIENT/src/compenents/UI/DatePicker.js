@@ -17,8 +17,6 @@ const DatePicker = ({
   start,
   excludeTime,
 }) => {
-  if (start) excludeTime.push(start);
-
   excludeTime.push(setHours(setMinutes(new Date(), 30), 18));
   const filterPassedTime = (start) => {
     const currentDate = addMinutes(new Date(), 30);
