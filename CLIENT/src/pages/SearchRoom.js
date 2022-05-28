@@ -4,6 +4,7 @@ import { getAvailableRooms, reset } from "../features/room/roomSlice";
 import { setHours, setMinutes, addMinutes } from "date-fns";
 import Modal from "../compenents/UI/Modal";
 import { createBookings } from "../features/booking/bookSlice";
+import Pagination from "../compenents/UI/Pagination";
 import { toast } from "react-toastify";
 import Spinner from "../compenents/UI/Spinner";
 import ReactDatePicker from "react-datepicker";
@@ -18,6 +19,15 @@ const SearchRoom = () => {
     const selectedDate = new Date(start);
     return currentDate.getTime() < selectedDate.getTime();
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(5);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
 
   useEffect(() => {
     return function cleanup() {
@@ -107,7 +117,7 @@ const SearchRoom = () => {
             </tr>
           </thead>
           <tbody>
-            {rooms.map((room) => {
+            {rooms.slice(indexOfFirst, indexOfLast).map((room) => {
               return (
                 <React.Fragment key={room.idRoom}>
                   <tr>
@@ -163,6 +173,11 @@ const SearchRoom = () => {
             })}
           </tbody>
         </table>
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={rooms.length}
+          paginate={paginate}
+        />
       </div>
     );
   }
