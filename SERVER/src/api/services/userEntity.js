@@ -19,7 +19,6 @@ const getUserByName = async (fullName) => {
       },
     },
     attributes: ["idUser", "email", "fullName", "phone", "activation"],
-    raw: true,
     include: Role,
   });
   return users;

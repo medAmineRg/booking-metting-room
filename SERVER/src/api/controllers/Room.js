@@ -94,16 +94,18 @@ const SearchRoom = async (req, res) => {
 };
 
 const CreateRoom = async (req, res) => {
-  const { typeRoom, nameRoom, capacity } = req.body;
+  let { typeRoom, nameRoom, capacity } = req.body;
   try {
-    const response = await Room.create({ typeRoom, nameRoom, capacity });
+    capacity = Number(capacity);
+    const response = await Room.create({ typeRoom, capacity, nameRoom });
     return res
       .status(201)
       .send({ response, message: "Room created succefully" });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Error",
-      message: error.errors[0].message || "Can't create room try again",
+      message: "Can't create room try again",
       code: 400,
       api: "rooms",
       method: "POST",

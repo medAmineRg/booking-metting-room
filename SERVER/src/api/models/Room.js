@@ -18,7 +18,7 @@ const Room = db.define(
       allowNull: false,
       validate: {
         min: 1,
-        isNumber: {
+        isNumeric: {
           args: true,
           msg: "Capacity must be a number",
         },

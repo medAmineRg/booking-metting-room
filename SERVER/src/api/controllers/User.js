@@ -170,7 +170,7 @@ const UpdateUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Error",
-      message: error.errors[0].message || "Something went wrong",
+      message: "Something went wrong",
       code: "400",
       api: "users/:id/update",
       method: "PATCH",
@@ -180,6 +180,16 @@ const UpdateUser = async (req, res) => {
 
 const CreateUser = async (req, res) => {
   let { fullName, email, phone, password, idLoc, idRole } = req.body;
+
+  if (!idRole || isNaN(idRole)) {
+    return res.status(400).json({
+      api: "/users",
+      message: "You must provide a Role!",
+      status: "Error",
+      code: 400,
+      method: "POST",
+    });
+  }
 
   const emailExistingMsg = await checkEmailExist(email);
   if (!isNaN(fullName)) {
@@ -241,7 +251,7 @@ const CreateUser = async (req, res) => {
     return res.status(400).json({
       code: 400,
       api: "/users",
-      message: error.errors[0].message,
+      message: "Something went wrong try Again!",
       status: "Error",
       method: "POST",
     });
@@ -290,7 +300,7 @@ const DeleteUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       api: "users",
-      message: error.errors[0].message || "Can't delete user",
+      message: "Can't delete user",
       status: "Error",
       code: 400,
       method: "POST",

@@ -15,7 +15,6 @@ import {
 import { setHours, setMinutes, addMinutes } from "date-fns";
 import { getRooms, reset as resetRoom } from "../features/room/roomSlice";
 import { toast } from "react-toastify";
-import DatePicker from "../compenents/UI/DatePicker";
 import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
 import ReactDatePicker from "react-datepicker";

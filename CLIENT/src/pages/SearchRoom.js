@@ -231,15 +231,6 @@ const SearchRoom = () => {
                 className="form-control"
                 excludeTimes={excludeTime}
                 placeholderText={"Select End Date"}
-                // excludeDateIntervals={[
-                //   {
-                //     start: subDays(
-                //       new Date(start),
-                //       differenceInDays(new Date(start), new Date()) + 1
-                //     ),
-                //     end: addDays(new Date(start), -1),
-                //   },
-                // ]}
               />
             </div>
 

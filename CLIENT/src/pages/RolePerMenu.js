@@ -155,8 +155,12 @@ const RolePerMenu = () => {
         >
           <section className="from">
             <div className="form-group">
-              <select name="idRole" onChange={onChange}>
-                <option value={"Choose a Role"}>Choose a Role</option>
+              <select
+                name="idRole"
+                onChange={onChange}
+                value={newRolePerMenu.idRole}
+              >
+                <option value={0}>Choose a Role</option>
                 {roles.map((role) => {
                   return (
                     <option key={role.idRole} value={role.idRole}>
@@ -167,8 +171,12 @@ const RolePerMenu = () => {
               </select>
             </div>
             <div className="form-group">
-              <select name="idPer" onChange={onChange}>
-                <option value={"Choose a Permission"}>
+              <select
+                name="idPer"
+                onChange={onChange}
+                value={newRolePerMenu.idPer}
+              >
+                <option disabled value={0}>
                   Choose a Permission
                 </option>
                 {permission.map((per) => {
@@ -181,8 +189,14 @@ const RolePerMenu = () => {
               </select>
             </div>
             <div className="form-group">
-              <select name="idMenu" onChange={onChange}>
-                <option value={"chode a menu"}>Choose a Menu</option>
+              <select
+                name="idMenu"
+                onChange={onChange}
+                value={newRolePerMenu.idMenu}
+              >
+                <option disabled value={0}>
+                  Choose a Menu
+                </option>
                 {menus.map((menu) => {
                   return (
                     <option key={menu.idMenu} value={menu.idMenu}>

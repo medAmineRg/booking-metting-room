@@ -235,7 +235,7 @@ const User = () => {
                 onChange={onChange}
                 defaultValue={newUser.idRole}
               >
-                <option>Choose a Role</option>
+                <option disabled>Choose a Role</option>
                 {roles.map((role) => {
                   return (
                     <option key={role.idRole} value={role.idRole}>

@@ -1,3 +1,4 @@
+const { throws } = require("assert");
 const Menu = require("../models/Menu");
 const Permission = require("../models/Permission");
 const Role = require("../models/Role");
@@ -37,25 +38,37 @@ const getAllRolePerMenu = async (req, res) => {
 
 const createRolePerMenu = async (req, res) => {
   const { idRole, idPer, idMenu } = req.body;
+
   try {
+    if (!idRole || !idPer || !idMenu) {
+      throw new Error("Must Provide all fields.");
+    }
+    const checkExistence = await Role_Permission_Menu.findOne({
+      where: {
+        idRole,
+        idPer,
+        idMenu,
+      },
+    });
+    if (checkExistence) {
+      throw new Error("Alereday exist.");
+    }
     const response = await Role_Permission_Menu.create({
       idRole,
       idPer,
       idMenu,
     });
-    return res
-      .status(201)
-      .json({
-        response,
-        message: "role-permission-menu was Created succefully",
-      });
+    return res.status(201).json({
+      response,
+      message: "role-permission-menu was Created succefully",
+    });
   } catch (error) {
     return res.status(400).json({
       code: 400,
       status: "Error",
       api: "role-permission-menu",
       method: "POST",
-      message: error.parent.detail || "Can't create role-per-menu",
+      message: error.message,
     });
   }
 };
