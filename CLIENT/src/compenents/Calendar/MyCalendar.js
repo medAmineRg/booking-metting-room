@@ -232,15 +232,12 @@ const MyCalendar = () => {
             <select
               className="form-control"
               name="idRoom"
-              defaultValue={roomUser.idRoom}
+              defaultValue={bookInfo.idRoom}
               onChange={(e) => {
-                console.log(e.target.value);
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value });
               }}
             >
-              <option value="none" defaultValue>
-                Choose a room
-              </option>
+              <option>Choose a room</option>
               {rooms.map((room) => {
                 return (
                   <option key={room.idRoom} value={room.idRoom}>

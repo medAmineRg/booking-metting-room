@@ -8,6 +8,7 @@ const {
   getBookingsByName,
 } = require("../services/bookingEntity.js");
 const { filterCheck } = require("../helpers/userHelper");
+const Room = require("../models/Room");
 
 const getAllbookings = async (req, res) => {
   try {
@@ -109,6 +110,16 @@ const getBookingByIdRoomUser = async (req, res) => {
 const addBooking = async (req, res) => {
   const idUser = req.user.idUser;
   const { idRoom, subject, description, beginAt, endAt } = req.body;
+
+  if (!beginAt || !endAt) {
+    return res.status(400).json({
+      api: "/bookings",
+      code: 400,
+      message: "You have to provide the date!",
+      status: "Error",
+      method: "POST",
+    });
+  }
   if (!idRoom) {
     return res.status(400).json({
       api: "/bookings",
@@ -170,6 +181,24 @@ const addBooking = async (req, res) => {
 const updateBooking = async (req, res) => {
   const now = generateDateTime(2);
   const { idRoom, beginAt, endAt } = req.body;
+
+  const book = await Booking.findOne({
+    where: {
+      idBooking: req.params.id,
+    },
+    attributes: ["idRoom"],
+    raw: true,
+  });
+  if (!book) {
+    return res.status(400).json({
+      message: "No Booking was Found",
+      api: "/bookings",
+      code: 400,
+      status: "Error",
+      method: "PATCH",
+    });
+  }
+
   if (beginAt && endAt) {
     const dateIsntValid = checkDate(beginAt, endAt);
     if (dateIsntValid)
@@ -181,24 +210,22 @@ const updateBooking = async (req, res) => {
         method: "PATCH",
       });
 
-    if (idRoom) {
-      const bookingAv = await checkForBookingAvailability(
-        beginAt,
-        endAt,
-        idRoom,
-        req.params.id
-      );
+    const bookingAv = await checkForBookingAvailability(
+      beginAt,
+      endAt,
+      book.idRoom,
+      req.params.id
+    );
 
-      if (bookingAv[0] && bookingAv[0].idBooking !== req.params.id)
-        return res.status(400).json({
-          api: "/bookings",
-          code: 400,
-          status: "Error",
-          method: "PATCH",
-          message:
-            "Alreday has a booking in that room at this time! please select another time.",
-        });
-    }
+    if (bookingAv[0] && bookingAv[0].idBooking !== req.params.id)
+      return res.status(400).json({
+        api: "/bookings",
+        code: 400,
+        status: "Error",
+        method: "PATCH",
+        message:
+          "Alreday has a booking in that room at this time! please select another time.",
+      });
   }
 
   try {

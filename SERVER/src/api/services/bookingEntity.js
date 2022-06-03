@@ -40,6 +40,7 @@ const getBookings = async (idRole = "", idUser = "") => {
       "endAt",
       "isCancled",
       "Creator",
+      "idRoom",
     ],
     include: [
       { model: Room, attributes: ["nameRoom"] },
@@ -52,7 +53,6 @@ const getBookings = async (idRole = "", idUser = "") => {
 const getBookingsByName = async (title, idUser, idRole) => {
   let condition = idRole !== 1 ? { Creator: { [Op.eq]: idUser } } : {};
   condition.subject = { [Op.like]: !(title === "all") ? `%${title}%` : "%" };
-  console.log(condition);
   let allBookings = await Booking.findAll({
     where: condition,
     attributes: [

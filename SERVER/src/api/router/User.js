@@ -23,7 +23,7 @@ const { yupValidation } = require("../middleware/validateMiddleware");
 // } = require("../Validations/userValidation");
 
 router.get("/user", auth, hasAuth(5, 1), GetUsers);
-router.get("/user/verify/:token", hasAuth(5, 2), VerifyUser);
+router.get("/user/verify/:token", VerifyUser);
 router.get("/user/:name", auth, hasAuth(5, 2), GetUserByName);
 router.post("/user", RegisterUser);
 router.post("/user/:id/active", auth, ActiveAcount);

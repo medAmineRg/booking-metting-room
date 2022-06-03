@@ -12,8 +12,27 @@ const sendEmail = async (token, email, fullname) => {
     text: "A user want to join The app",
     html: `<strong>A new user called ${fullname} and signed with ${email}, want to join the app click to the link to add him </strong>
     <a href=${
-      "http://localhost:5000/users/verify/" + token
+      "http://localhost:5000/user/verify/" + token
     }>Activate the account</a>`,
+  };
+  try {
+    await sgMail.send(msg);
+    return;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const activateMail = async (email, fullname) => {
+  console.log(email, fullname);
+  const msg = {
+    to: email,
+    from: "amine.mohamed.rg@gmail.com",
+    subject: "Activation Account.",
+    text: "The admin has just activate your acount",
+    html: `<strong>Hey ${fullname} we are sending you this message to tell that the admin activate your account, you can login in the app now. have a good day. </strong>
+    <a href=${"http://localhost:3000/login"}>Click to Login here</a>`,
   };
   try {
     await sgMail.send(msg);
@@ -131,4 +150,5 @@ module.exports = {
   verifyToken,
   generateMenusPermission,
   filterCheck,
+  activateMail,
 };

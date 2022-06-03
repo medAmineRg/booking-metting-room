@@ -3,6 +3,7 @@ const {
   generateHashPass,
   generateToken,
   verifyToken,
+  activateMail,
 } = require("../helpers/userHelper");
 const {
   checkEmailExist,
@@ -10,6 +11,7 @@ const {
   activateUserAccout,
   checkIdentity,
   getUserByName,
+  getUserById,
 } = require("../services/userEntity");
 
 const Role = require("../models/Role");
@@ -113,7 +115,10 @@ const VerifyUser = async (req, res) => {
     if (tknRes.msg) {
       return res.status(400).json(tknRes.msg);
     }
+    const user = await getUserById(tknRes.userId);
     await activateUserAccout(tknRes.userId);
+    await activateMail(user.email, user.fullName);
+
     return res.status(200).send({
       status: "OK",
       message: "Account has Activated succefully",
@@ -126,7 +131,7 @@ const VerifyUser = async (req, res) => {
       status: "Error",
       code: 400,
       api: "users/verify",
-      message: "You had Activated the account ",
+      message: "Something went wrong!",
       method: "GET",
     });
   }

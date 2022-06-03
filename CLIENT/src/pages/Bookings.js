@@ -81,7 +81,7 @@ const Booking = () => {
     let updatedBooking = { id, ...booking };
     if (start) updatedBooking.beginAt = start;
     if (end) updatedBooking.endAt = end;
-
+    console.log(updatedBooking);
     dispatch(updateBooking(updatedBooking))
       .unwrap()
       .then((res) => {
@@ -114,7 +114,6 @@ const Booking = () => {
   if (start) {
     exlaudeHours = start.getHours();
     let min = start.getMinutes();
-    console.log(min);
     for (let i = 1; i < 12; i++) {
       if (i === 1) {
         excludeTime.push(start);
@@ -134,7 +133,6 @@ const Booking = () => {
         break;
       }
     }
-    console.log(excludeTime, new Date(start));
   }
 
   const excludeTimeFun = (excludeTime, str, end) => {
@@ -196,14 +194,7 @@ const Booking = () => {
                       <option disabled>{book.Room.nameRoom}</option>
                       {rooms.map((room) => {
                         return (
-                          <option
-                            // defaultValue={
-                            //   book.Room.nameRoom === room.nameRoom &&
-                            //   room.nameRoom
-                            // }
-                            key={room.idRoom}
-                            value={room.idRoom}
-                          >
+                          <option key={room.idRoom} value={room.idRoom}>
                             {room.nameRoom}
                           </option>
                         );

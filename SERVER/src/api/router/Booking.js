@@ -12,10 +12,10 @@ const {
 const { auth, hasAuth, hasUpdAuth } = require("../middleware/auth");
 const { yupValidation } = require("../middleware/validateMiddleware");
 
-// const {
-//   bookingSchema,
-//   bookingUpdateSchema,
-// } = require("../Validations/bookingValidation");
+const {
+  bookingSchema,
+  bookingUpdateSchema,
+} = require("../Validations/bookingValidation");
 
 const express = require("express"),
   router = express.Router();
