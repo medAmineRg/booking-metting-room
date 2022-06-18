@@ -4,20 +4,21 @@ const useAuth = (menu) => {
   let showAddBtn = false;
 
   let per;
-  if (menu.Permission) {
+  if (menu && menu.Permission) {
     per = menu.Permission;
+    for (let i = 0; i < per.length; i++) {
+      if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
+        showAddBtn = true;
+      }
+      if (per[i].namePer === "UPDATE" || per[i].namePer === "Garant All") {
+        showEditBtn = true;
+      }
+      if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
+        showDeleteBtn = true;
+      }
+    }
   }
-  for (let i = 0; i < per.length; i++) {
-    if (per[i].namePer === "WRITE" || per[i].namePer === "Garant All") {
-      showAddBtn = true;
-    }
-    if (per[i].namePer === "UPDATE" || per[i].namePer === "Garant All") {
-      showEditBtn = true;
-    }
-    if (per[i].namePer === "DELETE" || per[i].namePer === "Garant All") {
-      showDeleteBtn = true;
-    }
-  }
+  
   return {
     showAddBtn,
     showEditBtn,

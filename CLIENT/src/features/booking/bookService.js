@@ -63,6 +63,18 @@ const updateBooking = async (data, token) => {
   return response.data;
 };
 
+const cancelBooking = async (data, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+
+  const response = await axios.patch(API_URL + "/" + data + "/cancel", {}, config);
+  return response.data;
+};
+
 const deleteBooking = async (id, token) => {
   const config = {
     headers: {
@@ -79,6 +91,7 @@ const bookService = {
   createBooking,
   filterBooking,
   updateBooking,
+  cancelBooking,
   deleteBooking,
   getBookingByName,
 };

@@ -10,12 +10,12 @@ const {
 } = require("../controllers/Booking");
 
 const { auth, hasAuth, hasUpdAuth } = require("../middleware/auth");
-const { yupValidation } = require("../middleware/validateMiddleware");
+// const { yupValidation } = require("../middleware/validateMiddleware");
 
-const {
-  bookingSchema,
-  bookingUpdateSchema,
-} = require("../Validations/bookingValidation");
+// const {
+//   bookingSchema,
+//   bookingUpdateSchema,
+// } = require("../Validations/bookingValidation");
 
 const express = require("express"),
   router = express.Router();
@@ -31,7 +31,7 @@ router.get(
 );
 router.post("/bookings", auth, hasAuth(8, 3), addBooking);
 router.patch("/bookings/:id", auth, hasUpdAuth(), updateBooking);
-router.patch("/bookings/:id/cancel", auth, hasAuth(8, 4), cancelBooking);
+router.patch("/bookings/:id/cancel", auth, hasUpdAuth(), cancelBooking);
 router.delete("/bookings/:id", auth, hasAuth(8, 5), deleteBooking);
 
 module.exports = router;

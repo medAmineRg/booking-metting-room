@@ -20,8 +20,11 @@ const Permission = () => {
   const { permission, isLoading } = useSelector((state) => state.per);
   const dispatch = useDispatch();
 
-  const { currentMenu } = useSelector((state) => state.menus);
-  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
+  const menu = localStorage.getItem("whereAt")
+  const { currentMenu } =  useSelector((state) =>  state.menus);
+
+
+  const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(JSON.parse(menu) || currentMenu);
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);

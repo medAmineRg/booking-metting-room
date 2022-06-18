@@ -165,7 +165,7 @@ a {
 
 /* table */
 .container {
-  left: 350px;
+  left: 320px;
   width: 980px;
   position: absolute;
   top: 100px;
@@ -209,6 +209,10 @@ a {
 .content-table tbody tr.active-row {
   font-weight: bold;
   color: #009879;
+}
+
+.content-table .btn {
+  padding: 2px;
 }
 
 /* pagination */

@@ -186,12 +186,22 @@ const updateBooking = async (req, res) => {
     where: {
       idBooking: req.params.id,
     },
-    attributes: ["idRoom"],
+    attributes: ["idRoom", "isCancled"],
     raw: true,
   });
   if (!book) {
     return res.status(400).json({
       message: "No Booking was Found",
+      api: "/bookings",
+      code: 400,
+      status: "Error",
+      method: "PATCH",
+    });
+  }
+  console.log(book);
+  if(book.isCancled) {
+    return res.status(400).json({
+      message: "Booking is cancled you cant updated!",
       api: "/bookings",
       code: 400,
       status: "Error",
@@ -271,26 +281,44 @@ const updateBooking = async (req, res) => {
 };
 
 const cancelBooking = async (req, res) => {
+  const now = generateDateTime(1);
+
   try {
-    await Booking.update(
+    const resUpdate = await Booking.update(
       { isCancled: true },
       {
         where: {
           idBooking: req.params.id,
+            beginAt: {
+              [Op.gt]: new Date(now),
+            }
         },
       }
     );
-    res.status(200).json({
+    if (resUpdate[0]) {
+      return res.status(200).json({
       status: "Ok",
       code: 200,
       message: "Cancled sucefully.",
       api: "/bookings/:id/cancel",
       method: "PATCH",
     });
+    }
+
+    
+    return res.status(401).json({
+      api: "/bookings",
+      code: 400,
+      status: "Error",
+      method: "PATCH",
+      message:
+        "You can only cancel the booking before 1 hours from the starting time",
+    });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       code: 400,
-      message: error.errors[0].message || "Can't Cancel booking",
+      message: "Can't Cancel booking",
       status: "Error",
       method: "PATCH",
       api: "/bookings",

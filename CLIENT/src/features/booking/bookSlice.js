@@ -105,6 +105,25 @@ export const updateBooking = createAsyncThunk(
   }
 );
 
+// cancel booking
+export const cancelBooking = createAsyncThunk(
+  "booking/cancel",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await bookService.cancelBooking(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const deleteBookings = createAsyncThunk(
   "bookings/delete",
   async (id, thunkAPI) => {
@@ -178,6 +197,17 @@ export const bookSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(updateBooking.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(cancelBooking.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cancelBooking.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(cancelBooking.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
       })

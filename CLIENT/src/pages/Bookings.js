@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import Modal from "../compenents/UI/Modal";
 import Pagination from "../compenents/UI/Pagination";
 import { BiEdit } from "react-icons/bi";
+import {TiCancel} from "react-icons/ti"
 import { AiOutlineDelete } from "react-icons/ai";
 import {
   bookingsByName,
+  cancelBooking,
   createBookings,
   deleteBookings,
   getBookings,
@@ -24,7 +26,7 @@ const Booking = () => {
   const { bookings, isLoading } = useSelector((state) => state.book);
   const { rooms } = useSelector((state) => state.rooms);
   const user = JSON.parse(localStorage.getItem("user"));
-  const { currentMenu } = useSelector((state) => state.menus);
+  const { currentMenu } =  useSelector((state) =>  state.menus);
 
   const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
@@ -36,6 +38,8 @@ const Booking = () => {
   const [id, setId] = useState(null);
   const [add, setAdd] = useState(false);
   const [ask, setAsk] = useState(false);
+  const [cancel, setCancel] = useState(false);
+
 
   const [search, setSearch] = useState("");
 
@@ -81,7 +85,6 @@ const Booking = () => {
     let updatedBooking = { id, ...booking };
     if (start) updatedBooking.beginAt = start;
     if (end) updatedBooking.endAt = end;
-    console.log(updatedBooking);
     dispatch(updateBooking(updatedBooking))
       .unwrap()
       .then((res) => {
@@ -96,6 +99,19 @@ const Booking = () => {
       .catch((e) => {
         toast.error(e);
       });
+  };
+
+  const cancelFun = () => {
+    dispatch(cancelBooking(id))
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message);
+        setId(null);
+        dispatch(getBookings())
+      })
+      .catch((e) => toast.error(e));
+      setCancel(false);
+
   };
 
   const deleteFun = () => {
@@ -363,6 +379,19 @@ const Booking = () => {
           </p>
         </Modal>
       )}
+      {cancel && (
+        <Modal
+          open={cancel}
+          onClose={() => setCancel(false)}
+          submit={"Yes"}
+          post={cancelFun}
+        >
+          <h3 style={{ color: "#6E6E74" }}>Are you Sure?</h3>
+          <p style={{ color: "gray" }}>
+            Do you really want to cancel your booking?
+          </p>
+        </Modal>
+      )}
       {showAddBtn && (
         <div className="filter search">
           <div style={{ flexBasis: "50%" }}>
@@ -406,14 +435,13 @@ const Booking = () => {
       <table className="content-table">
         <thead>
           <tr>
-            <th></th>
-            <th>Id</th>
             <th>Room</th>
             <th>User</th>
             <th>Title</th>
             <th>Start Time</th>
             <th>End Time</th>
             <th>Description</th>
+            <th>Cancled</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -424,16 +452,16 @@ const Booking = () => {
             </tr>
           ) : (
             bookings.slice(indexOfFirst, indexOfLast).map((book) => {
+              const cancelStyle = book.isCancled ? {color:"white",border:"1px solid #dc3545", backgroundColor:"#dc3545"} : {}
               return (
                 <tr key={book.idBooking}>
-                  <td></td>
-                  <td>{book.idBooking}</td>
                   <td>{book.Room ? book.Room.nameRoom : "Deleted"}</td>
                   <td>{book.User ? book.User.fullName : "Deleted"}</td>
                   <td>{book.subject}</td>
                   <td>{new Date(book.beginAt).toLocaleString("fr-FR")}</td>
                   <td>{new Date(book.endAt).toLocaleString("fr-FR")}</td>
                   <td>{book.description.substr(0, 15) + "..."}</td>
+                  <td style={cancelStyle}>{book.isCancled ? "Yes": "No" }</td>
                   <td>
                     {(showEditBtn || user.user.idUser === book.Creator) && (
                       <button
@@ -447,9 +475,18 @@ const Booking = () => {
                         <BiEdit />
                       </button>
                     )}
+                    <button className="btn btn-danger" onClick={() => {
+                      setId(book.idBooking);
+                      setCancel(true)
+
+                    }}
+                    style={{ marginBottom: "5px", backgroundColor:"#FEC43C", borderColor:"#FEC43C" }}>
+                      <TiCancel/>
+                    </button>
                     {showDeleteBtn && (
                       <button
                         className="btn btn-danger"
+                        style={{ marginBottom: "5px" }}
                         onClick={() => {
                           setId(book.idBooking);
                           setAsk(true);
@@ -458,6 +495,7 @@ const Booking = () => {
                         <AiOutlineDelete />
                       </button>
                     )}
+                    
                   </td>
                 </tr>
               );
