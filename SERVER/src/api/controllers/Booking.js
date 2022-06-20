@@ -110,7 +110,6 @@ const getBookingByIdRoomUser = async (req, res) => {
 const addBooking = async (req, res) => {
   const idUser = req.user.idUser;
   const { idRoom, subject, description, beginAt, endAt } = req.body;
-
   if (!beginAt || !endAt) {
     return res.status(400).json({
       api: "/bookings",
@@ -285,7 +284,7 @@ const cancelBooking = async (req, res) => {
 
   try {
     const resUpdate = await Booking.update(
-      { isCancled: true },
+      { isCancled: true, cancledBy:req.user.idUser },
       {
         where: {
           idBooking: req.params.id,

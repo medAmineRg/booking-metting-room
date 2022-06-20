@@ -162,7 +162,7 @@ const roomSlice = createSlice({
       .addCase(getAvailableRooms.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.rooms = action.payload;
+        state.rooms = action.payload.freeRooms;
       })
       .addCase(getAvailableRooms.rejected, (state) => {
         state.isLoading = false;

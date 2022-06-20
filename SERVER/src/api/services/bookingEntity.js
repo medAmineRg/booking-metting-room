@@ -12,18 +12,31 @@ const checkForBookingAvailability = async (begin, end, room, idBook = -1) => {
       && ('[${begin}, ${end})'::tstzrange)
       AND "idRoom" = :room
       AND "idBooking" != ${idBook}
+      And "isCancled" = false
       limit 1`,
     { replacements: { room }, type: QueryTypes.SELECT }
   );
   return booking;
 };
 
+const getFreeRooms = async (begin, end, capacity) => {
+
+    const booking = await db.query(
+      `select * from "Room" where capacity >= ${capacity} AND "idRoom" not in(SELECT "idRoom"
+      FROM "Booking"
+      WHERE tstzrange("beginAt", "endAt")
+      && ('[${begin},${end})'::tstzrange) AND "isCancled" = false)`
+    );
+    return booking[0];
+}
+
 const roomArentAvailable = async (begin, end) => {
   const booking = await db.query(
     `SELECT "idRoom"
     FROM "Booking"
     WHERE tstzrange("beginAt", "endAt")
-    && ('[${begin}, ${end})'::tstzrange)`
+    && ('[${begin}, ${end})'::tstzrange) And "isCancled" = false
+    `
   );
   return booking;
 };
@@ -32,6 +45,9 @@ const getBookings = async (idRole = "", idUser = "") => {
   let condition = idRole !== 1 ? { Creator: { [Op.eq]: idUser } } : {};
   let allBookings = await Booking.findAll({
     where: condition,
+    order: [
+      // Will escape title and validate DESC against a list of valid direction parameters
+      ['createdAt', 'DESC']],
     attributes: [
       "idBooking",
       "subject",
@@ -77,4 +93,5 @@ module.exports = {
   getBookings,
   roomArentAvailable,
   getBookingsByName,
+  getFreeRooms
 };

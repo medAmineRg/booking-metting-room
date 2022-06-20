@@ -67,7 +67,8 @@ const Booking = () => {
   };
 
   const createBooking = () => {
-    dispatch(createBookings({ beginAt: start, endAt: end, ...booking }))
+    console.log(start);
+    dispatch(createBookings({ beginAt: new Date(start), endAt: new Date(end), ...booking }))
       .unwrap()
       .then((res) => {
         toast.success(res.message);
@@ -128,6 +129,7 @@ const Booking = () => {
   let excludeTime = [];
   let exlaudeHours;
   if (start) {
+    console.log(start);
     exlaudeHours = start.getHours();
     let min = start.getMinutes();
     for (let i = 1; i < 12; i++) {

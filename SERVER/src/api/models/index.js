@@ -10,17 +10,15 @@ module.exports = () => {
   const Role_Permission_Menu = require("./Role_Permission_Menu");
 
   Role_Permission_Menu.belongsTo(Role, {
-    onDelete: "CASCADE",
     foreignKey: "idRole",
   });
   Role_Permission_Menu.belongsTo(Menu, {
     foreignKey: "idMenu",
-    onDelete: "CASCADE",
   });
   Role_Permission_Menu.belongsTo(Permission, {
     foreignKey: "idPer",
-    onDelete: "CASCADE",
   });
+
   Role.hasMany(Role_Permission_Menu, {
     foreignKey: "idRole",
     as: "RolePerMen",
@@ -28,10 +26,12 @@ module.exports = () => {
   Menu.hasMany(Role_Permission_Menu, {
     foreignKey: "idMenu",
     as: "MenuPerRole",
+
   });
   Permission.hasMany(Role_Permission_Menu, {
     foreignKey: "idPer",
     as: "PermissionRolMen",
+
   });
 
   Company.hasMany(Location, {
@@ -39,6 +39,7 @@ module.exports = () => {
   });
   Location.belongsTo(Company, {
     foreignKey: "idCompany",
+
   });
   Location.hasMany(User, {
     foreignKey: "idLoc",
@@ -58,9 +59,11 @@ module.exports = () => {
   Role.hasMany(User, {
     foreignKey: "idRole",
     as: "Role",
+
   });
   User.belongsTo(Role, {
     foreignKey: "idRole",
+
   });
 
   User.hasMany(Booking, {

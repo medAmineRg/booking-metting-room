@@ -253,10 +253,11 @@ const CreateUser = async (req, res) => {
       message: "New user has been created succefully",
     });
   } catch (error) {
+    console.log(error.message);
     return res.status(400).json({
       code: 400,
       api: "/users",
-      message: "Something went wrong try Again!",
+      message: (error && error.message) || "Something went wrong try Again!",
       status: "Error",
       method: "POST",
     });
