@@ -21,7 +21,7 @@ const User = db.define(
       validate: {
         len: {
           args: [5, 30],
-          msg: "Name length must be between 3 and 30",
+          msg: "Name length must be between 5 and 30",
         },
       },
     },

@@ -1,8 +1,8 @@
 const Room = require("../models/Room");
-const { roomArentAvailable } = require("../services/bookingEntity");
 const { Op } = require("sequelize");
 const { checkDate } = require("../helpers/bookingHelper");
 const { getRoomByName } = require("../services/roomEntity");
+const { getFreeRooms } = require("../services/bookingEntity");
 
 const GetRoom = async (req, res) => {
   try {
@@ -51,7 +51,7 @@ const SearchRoom = async (req, res) => {
       status: "Error",
       method: "POST",
     });
-  if (req.body.capacity <= 1) {
+  if (!req.body.capacity || req.body.capacity <= 1 || isNaN(req.body.capacity)) {
     return res.status(400).json({
       status: "Error",
       code: 400,
@@ -60,33 +60,20 @@ const SearchRoom = async (req, res) => {
       method: "POST",
     });
   }
-  req.body.capacity = 2;
   try {
-    const nonAvailableRoom = await roomArentAvailable(
-      req.body.start,
-      req.body.end
-    );
-    let idRoom = [];
-    if (nonAvailableRoom[0].length) {
-      for (let i = 0; i < nonAvailableRoom[0].length; i++) {
-        idRoom.push(nonAvailableRoom[0][i].idRoom);
-      }
-    }
-    const availableRoom = await Room.findAll({
-      where: {
-        idRoom: { [Op.not]: idRoom },
-        capacity: { [Op.gt]: req.body.capacity },
-      },
-      attributes: ["idRoom", "typeRoom", "capacity", "nameRoom"],
-      raw: true,
-    });
-    return res.status(200).send(availableRoom);
+    const freeRooms = await getFreeRooms(req.body.start, req.body.end, req.body.capacity)
+    return res.status(200).send({freeRooms,status: "OK",
+    code: 200,
+    message: `${freeRooms.length} room found`,
+    api: "search-room",
+    method: "get", });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Error",
       code: 400,
       message:
-        (error.errors && error.errors[0].message) || "Something went wrong",
+        "Something went wrong",
       api: "search-room ",
       method: "POST",
     });

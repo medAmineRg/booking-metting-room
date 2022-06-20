@@ -160,7 +160,7 @@ const User = () => {
                   <div className="form-group">
                     <label>Role</label>
                     <select name="idRole" onChange={onChange}>
-                      <option defaultValue>{user.Role.nameRole}</option>
+                      <option defaultValue>{user.Role ? user.Role.nameRole : "Null"}</option>
                       {roles.map((role) => {
                         return (
                           <option key={role.idRole} value={role.idRole}>
@@ -302,7 +302,6 @@ const User = () => {
       <table className="content-table">
         <thead>
           <tr>
-            <th></th>
             <th>Full Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -314,11 +313,10 @@ const User = () => {
           {users.slice(indexOfFirst, indexOfLast).map((user) => {
             return (
               <tr key={user.idUser}>
-                <td></td>
                 <td>{user.fullName}</td>
                 <td>{user.email}</td>
                 <td>{user.phone ? user.phone : "Not Provided"}</td>
-                <td>{user.Role.nameRole}</td>
+                <td>{user.Role ? user.Role.nameRole : "Null"}</td>
                 <td>
                   {showEditBtn && (
                     <button
