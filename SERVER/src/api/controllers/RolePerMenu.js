@@ -1,4 +1,3 @@
-const { throws } = require("assert");
 const Menu = require("../models/Menu");
 const Permission = require("../models/Permission");
 const Role = require("../models/Role");

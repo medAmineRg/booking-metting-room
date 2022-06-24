@@ -10,6 +10,7 @@ const RoleRouter = require("./router/Role");
 const MenuRouter = require("./router/Menu");
 const RolePerMenuRouter = require("./router/RolePerMenu");
 const RoomRouter = require("./router/Room");
+const VideoRouter = require("./router/VideoChat")
 
 // const { lookingForNonCacledToCancel } = require("./helpers/nodeCron");
 
@@ -24,6 +25,8 @@ app.use(RoleRouter);
 app.use(MenuRouter);
 app.use(RolePerMenuRouter);
 app.use(RoomRouter);
+app.use(VideoRouter);
+
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port 5000");

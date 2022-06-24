@@ -26,6 +26,9 @@ const Room = lazy(() => import("./pages/Room"));
 const Booking = lazy(() => import("./pages/Bookings"));
 const Calendar = lazy(() => import("./pages/Calendar"));
 const SearchRoom = lazy(() => import("./pages/SearchRoom"));
+const Join = lazy(() => import("./pages/JoinRoom"));
+const Meeting = lazy(() => import("./pages/VideoRoom"));
+
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -40,6 +43,7 @@ function App() {
     Booking: <Booking />,
     MyCalendar: <Calendar />,
     SearchRoom: <SearchRoom />,
+    Join: <Join/>
   };
   let menus;
   if (user) {
@@ -107,6 +111,14 @@ function App() {
                 element={<Navigate replace to={"/Dashboard"} />}
               />
             </Route>
+
+            {/* <Route path="/video" element={<Suspense fallback={<Spinner />}>
+                    <Join />
+                  </Suspense>}/> */}
+            <Route path="/video/:id" element={<Suspense fallback={<Spinner />}>
+                    <Meeting />
+                  </Suspense>}/>
+
 
             {/* catch any unvailable routes */}
             <Route

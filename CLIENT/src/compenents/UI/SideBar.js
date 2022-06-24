@@ -8,7 +8,7 @@ import { IoTicketOutline } from "react-icons/io5";
 import { BsCalendarDate } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { FaUserShield } from "react-icons/fa";
-import { AiOutlineDashboard } from "react-icons/ai";
+import { AiOutlineDashboard, AiOutlineVideoCamera} from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { currentMenu } from "../../features/menu/menuSlice";
 
@@ -27,6 +27,7 @@ function SideBar() {
     Booking: <IoTicketOutline />,
     MyCalendar: <BsCalendarDate />,
     SearchRoom: <BsSearch />,
+    Join: <AiOutlineVideoCamera/>
   };
   return (
     <div className="sidebar">
