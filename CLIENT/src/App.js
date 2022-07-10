@@ -76,7 +76,6 @@ function App() {
             />
 
             {/* Routes comming from DB */}
-            {/* {menus && <Layout />} */}
             {menus &&
               menus.map((menu, i) => {
                 return (

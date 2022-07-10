@@ -104,11 +104,11 @@ const MyCalendar = () => {
 
   const [show, setShow] = useState(false);
   const [bookInfo, setBookInfo] = useState({
-    start: null,
-    end: null,
-    subject: null,
-    idRoom: null,
-    description: null,
+    start: "",
+    end: "",
+    subject: "",
+    idRoom: "",
+    description: "",
   });
   const [roomUser, setRoomUser] = useState({ idRoom: "", idUser: "" });
 
@@ -125,7 +125,15 @@ const MyCalendar = () => {
 
   const handleSelect = ({ start, end }) => {
     setBookInfo({ ...bookInfo, start, end });
-    dispatch(getAvailableRooms({ start, end }));
+    dispatch(getAvailableRooms({ start, end }))
+    .unwrap()
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e) => {
+      toast.error(e);
+      setShow(false);
+    });
     setShow(true);
   };
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Modal from "../compenents/UI/Modal";
 import Pagination from "../compenents/UI/Pagination";
 import { BiEdit } from "react-icons/bi";
-import {TiCancel} from "react-icons/ti"
+import { TiCancel } from "react-icons/ti";
 import { AiOutlineDelete } from "react-icons/ai";
 import {
   bookingsByName,
@@ -15,7 +15,11 @@ import {
   updateBooking,
 } from "../features/booking/bookSlice";
 import { setHours, setMinutes, addMinutes } from "date-fns";
-import { getRooms, reset as resetRoom } from "../features/room/roomSlice";
+import {
+  getAvailableRooms,
+  getRooms,
+  reset as resetRoom,
+} from "../features/room/roomSlice";
 import { toast } from "react-toastify";
 import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
@@ -23,10 +27,10 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const Booking = () => {
-  const { bookings, isLoading } = useSelector((state) => state.book);
-  const { rooms } = useSelector((state) => state.rooms);
+  const { bookings, isLoading } = useSelector(state => state.book);
+  const { rooms } = useSelector(state => state.rooms);
   const user = JSON.parse(localStorage.getItem("user"));
-  const { currentMenu } =  useSelector((state) =>  state.menus);
+  const { currentMenu } = useSelector(state => state.menus);
 
   const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
@@ -40,15 +44,14 @@ const Booking = () => {
   const [ask, setAsk] = useState(false);
   const [cancel, setCancel] = useState(false);
 
-
   const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
 
   const dispatch = useDispatch();
-  const onChange = (e) => {
-    setBooking((prevData) => ({
+  const onChange = e => {
+    setBooking(prevData => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
@@ -58,19 +61,24 @@ const Booking = () => {
   const indexOfFirst = indexOfLast - postsPerPage;
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const filterPassedTime = (start) => {
+  const filterPassedTime = start => {
     const currentDate = addMinutes(new Date(), 30);
     const selectedDate = new Date(start);
     return currentDate.getTime() < selectedDate.getTime();
   };
 
   const createBooking = () => {
-    console.log(start);
-    dispatch(createBookings({ beginAt: new Date(start), endAt: new Date(end), ...booking }))
+    dispatch(
+      createBookings({
+        beginAt: new Date(start),
+        endAt: new Date(end),
+        ...booking,
+      })
+    )
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         dispatch(getBookings());
         setBooking("");
@@ -78,7 +86,7 @@ const Booking = () => {
         setEndDate("");
         setAdd(false);
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -88,7 +96,7 @@ const Booking = () => {
     if (end) updatedBooking.endAt = end;
     dispatch(updateBooking(updatedBooking))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         dispatch(getBookings());
         setBooking("");
@@ -97,7 +105,7 @@ const Booking = () => {
         setId(null);
         setOpen(false);
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -105,25 +113,24 @@ const Booking = () => {
   const cancelFun = () => {
     dispatch(cancelBooking(id))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         setId(null);
-        dispatch(getBookings())
+        dispatch(getBookings());
       })
-      .catch((e) => toast.error(e));
-      setCancel(false);
-
+      .catch(e => toast.error(e));
+    setCancel(false);
   };
 
   const deleteFun = () => {
     dispatch(deleteBookings(id))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         setAsk(false);
         setId(null);
       })
-      .catch((e) => toast.error(e));
+      .catch(e => toast.error(e));
   };
 
   let excludeTime = [];
@@ -190,7 +197,7 @@ const Booking = () => {
           submit={"Submit"}
           post={update}
         >
-          {bookings.map((book) => {
+          {bookings.map(book => {
             if (book.idBooking === id) {
               return (
                 <section className="from" key={1}>
@@ -203,6 +210,39 @@ const Booking = () => {
                     />
                   </div>
                   <div className="form-group">
+                    <ReactDatePicker
+                      selected={start}
+                      onChange={date => setStartDate(date)}
+                      showTimeSelect
+                      filterTime={filterPassedTime}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      minDate={new Date()}
+                      timeIntervals={30}
+                      className="form-control"
+                      excludeTimes={excludeTime}
+                      placeholderText={new Date(book.beginAt).toLocaleString(
+                        "fr-FR"
+                      )}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <ReactDatePicker
+                      disabled={start ? false : true}
+                      selected={end}
+                      onChange={date => setEndDate(date)}
+                      showTimeSelect
+                      filterTime={filterPassedTime}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      minDate={new Date()}
+                      timeIntervals={30}
+                      className="form-control"
+                      excludeTimes={excludeTime}
+                      placeholderText={new Date(book.endAt).toLocaleString(
+                        "fr-FR"
+                      )}
+                    />
+                  </div>
+                  <div className="form-group">
                     <select
                       className="form-control"
                       name="idRoom"
@@ -210,7 +250,7 @@ const Booking = () => {
                       defaultValue={book.Room.nameRoom}
                     >
                       <option disabled>{book.Room.nameRoom}</option>
-                      {rooms.map((room) => {
+                      {rooms.map(room => {
                         return (
                           <option key={room.idRoom} value={room.idRoom}>
                             {room.nameRoom}
@@ -240,39 +280,6 @@ const Booking = () => {
                       onChange={onChange}
                     />
                   </div>
-                  <div className="form-group">
-                    <ReactDatePicker
-                      selected={start}
-                      onChange={(date) => setStartDate(date)}
-                      showTimeSelect
-                      filterTime={filterPassedTime}
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                      minDate={new Date()}
-                      timeIntervals={30}
-                      className="form-control"
-                      excludeTimes={excludeTime}
-                      placeholderText={new Date(book.beginAt).toLocaleString(
-                        "fr-FR"
-                      )}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <ReactDatePicker
-                      disabled={start ? false : true}
-                      selected={end}
-                      onChange={(date) => setEndDate(date)}
-                      showTimeSelect
-                      filterTime={filterPassedTime}
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                      minDate={new Date()}
-                      timeIntervals={30}
-                      className="form-control"
-                      excludeTimes={excludeTime}
-                      placeholderText={new Date(book.endAt).toLocaleString(
-                        "fr-FR"
-                      )}
-                    />
-                  </div>
                 </section>
               );
             } else {
@@ -290,6 +297,43 @@ const Booking = () => {
         >
           <section className="from">
             <div className="form-group">
+              <div className="form-group">
+                <ReactDatePicker
+                  selected={start}
+                  onChange={date => setStartDate(date)}
+                  showTimeSelect
+                  filterTime={filterPassedTime}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  minDate={new Date()}
+                  timeIntervals={30}
+                  className="form-control"
+                  excludeTimes={excludeTime}
+                  placeholderText={"Select Start Date"}
+                />
+              </div>
+
+              <div
+                className="form-group"
+                onClick={() => {
+                  if (!start) toast.error("select start date first");
+                }}
+              >
+                <ReactDatePicker
+                  disabled={start ? false : true}
+                  selected={end}
+                  onChange={date => {
+                    setEndDate(prev => date);
+                  }}
+                  showTimeSelect
+                  filterTime={filterPassedTime}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  minDate={new Date(start)}
+                  timeIntervals={30}
+                  className="form-control"
+                  excludeTimes={excludeTime}
+                  placeholderText={"Select End Date"}
+                />
+              </div>
               <select
                 className="form-control"
                 name="idRoom"
@@ -297,7 +341,7 @@ const Booking = () => {
                 defaultValue={booking.idRoom}
               >
                 <option>Select Room</option>
-                {rooms.map((room) => {
+                {rooms.map(room => {
                   return (
                     <option key={room.idRoom} value={room.idRoom}>
                       {room.nameRoom}
@@ -327,42 +371,6 @@ const Booking = () => {
                 name="description"
                 defaultValue={booking.description}
                 onChange={onChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <ReactDatePicker
-                selected={start}
-                onChange={(date) => setStartDate(date)}
-                showTimeSelect
-                filterTime={filterPassedTime}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                minDate={new Date()}
-                timeIntervals={30}
-                className="form-control"
-                excludeTimes={excludeTime}
-                placeholderText={"Select Start Date"}
-              />
-            </div>
-
-            <div
-              className="form-group"
-              onClick={() => {
-                if (!start) toast.error("select start date first");
-              }}
-            >
-              <ReactDatePicker
-                disabled={start ? false : true}
-                selected={end}
-                onChange={(date) => setEndDate(date)}
-                showTimeSelect
-                filterTime={filterPassedTime}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                minDate={new Date(start)}
-                timeIntervals={30}
-                className="form-control"
-                excludeTimes={excludeTime}
-                placeholderText={"Select End Date"}
               />
             </div>
           </section>
@@ -414,7 +422,7 @@ const Booking = () => {
               placeholder="search for a booking by Title"
               type="text"
               className="form-control"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               defaultValue={search}
             />
           </div>
@@ -425,8 +433,8 @@ const Booking = () => {
               onClick={() => {
                 dispatch(bookingsByName(search.length === 0 ? "all" : search))
                   .unwrap()
-                  .then((res) => toast.success(res.message))
-                  .catch((e) => toast.error(e));
+                  .then(res => toast.success(res.message))
+                  .catch(e => toast.error(e));
               }}
             >
               Search
@@ -453,8 +461,14 @@ const Booking = () => {
               <td>No bookings was found</td>
             </tr>
           ) : (
-            bookings.slice(indexOfFirst, indexOfLast).map((book) => {
-              const cancelStyle = book.isCancled ? {color:"white",border:"1px solid #dc3545", backgroundColor:"#dc3545"} : {}
+            bookings.slice(indexOfFirst, indexOfLast).map(book => {
+              const cancelStyle = book.isCancled
+                ? {
+                    color: "white",
+                    border: "1px solid #dc3545",
+                    backgroundColor: "#dc3545",
+                  }
+                : {};
               return (
                 <tr key={book.idBooking}>
                   <td>{book.Room ? book.Room.nameRoom : "Deleted"}</td>
@@ -463,7 +477,7 @@ const Booking = () => {
                   <td>{new Date(book.beginAt).toLocaleString("fr-FR")}</td>
                   <td>{new Date(book.endAt).toLocaleString("fr-FR")}</td>
                   <td>{book.description.substr(0, 15) + "..."}</td>
-                  <td style={cancelStyle}>{book.isCancled ? "Yes": "No" }</td>
+                  <td style={cancelStyle}>{book.isCancled ? "Yes" : "No"}</td>
                   <td>
                     {(showEditBtn || user.user.idUser === book.Creator) && (
                       <button
@@ -477,13 +491,19 @@ const Booking = () => {
                         <BiEdit />
                       </button>
                     )}
-                    <button className="btn btn-danger" onClick={() => {
-                      setId(book.idBooking);
-                      setCancel(true)
-
-                    }}
-                    style={{ marginBottom: "5px", backgroundColor:"#FEC43C", borderColor:"#FEC43C" }}>
-                      <TiCancel/>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => {
+                        setId(book.idBooking);
+                        setCancel(true);
+                      }}
+                      style={{
+                        marginBottom: "5px",
+                        backgroundColor: "#FEC43C",
+                        borderColor: "#FEC43C",
+                      }}
+                    >
+                      <TiCancel />
                     </button>
                     {showDeleteBtn && (
                       <button
@@ -497,7 +517,6 @@ const Booking = () => {
                         <AiOutlineDelete />
                       </button>
                     )}
-                    
                   </td>
                 </tr>
               );

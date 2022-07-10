@@ -1,5 +1,6 @@
 const addMinutes = require('date-fns/addMinutes')
 const checkDate = (start, end) => {
+  console.log(start, end);
   let today = new Date();
   start = new Date(start);
   end = new Date(end);
@@ -7,12 +8,12 @@ const checkDate = (start, end) => {
     return "Enter a valid Time";
   }
 
-  if (start.getHours() < 8 || start.getHours() > 18) {
+  if (start.getHours() < 8 || start.getHours() > 18 || end.getHours() < 8 || end.getHours()  > 18) {
     return "Time must be between 8am and 6pm";
   }
 
   if(addMinutes((today), 29) > start) {
-    return "You must book before 30 minutes from the beginig of the booking";
+    return "You must book before 30 minutes from the beginning of the booking";
   }
 };
 

@@ -20,10 +20,10 @@ import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
 
 const User = () => {
-  const { users, isLoading } = useSelector((state) => state.users);
-  const { role: roles } = useSelector((state) => state.role);
+  const { users, isLoading } = useSelector(state => state.users);
+  const { role: roles } = useSelector(state => state.role);
 
-  const { currentMenu } = useSelector((state) => state.menus);
+  const { currentMenu } = useSelector(state => state.menus);
   const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
   const [open, setOpen] = useState(false);
@@ -41,7 +41,7 @@ const User = () => {
   const indexOfFirst = indexOfLast - postsPerPage;
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   // add user
   const addUser = async () => {
@@ -53,12 +53,12 @@ const User = () => {
       await userSchemaReg.validate(newUser);
       dispatch(createUser(newUser))
         .unwrap()
-        .then((res) => {
+        .then(res => {
           toast.success(res.message);
           setAdd(false);
           setNewUser({});
         })
-        .catch((e) => toast.error(e));
+        .catch(e => toast.error(e));
     } catch (error) {
       return toast.error(error.errors[0]);
     }
@@ -66,14 +66,14 @@ const User = () => {
   const updateAUser = () => {
     dispatch(updateUser({ id, ...newUser }))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         dispatch(getUsers());
         setOpen(false);
         toast.success(res.message);
         setId(null);
         setNewUser({});
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -81,20 +81,20 @@ const User = () => {
   const deleteFun = () => {
     dispatch(deleteUser(id))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         setAsk(false);
         toast.success(res.message);
         setId(null);
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
 
   const dispatch = useDispatch();
 
-  const onChange = (e) => {
-    setNewUser((prevData) => ({
+  const onChange = e => {
+    setNewUser(prevData => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
@@ -118,7 +118,7 @@ const User = () => {
           submit={"Submit"}
           post={updateAUser}
         >
-          {users.map((user) => {
+          {users.map(user => {
             if (user.idUser === id) {
               return (
                 <section className="from" key={user.idUser}>
@@ -159,9 +159,12 @@ const User = () => {
                   </div>
                   <div className="form-group">
                     <label>Role</label>
-                    <select name="idRole" onChange={onChange}>
-                      <option defaultValue>{user.Role ? user.Role.nameRole : "Null"}</option>
-                      {roles.map((role) => {
+                    <select
+                      name="idRole"
+                      onChange={onChange}
+                      defaultValue={user.Role ? user.Role.nameRole : "Null"}
+                    >
+                      {roles.map(role => {
                         return (
                           <option key={role.idRole} value={role.idRole}>
                             {role.nameRole}
@@ -236,7 +239,7 @@ const User = () => {
                 defaultValue={newUser.idRole}
               >
                 <option disabled>Choose a Role</option>
-                {roles.map((role) => {
+                {roles.map(role => {
                   return (
                     <option key={role.idRole} value={role.idRole}>
                       {role.nameRole}
@@ -279,7 +282,7 @@ const User = () => {
               placeholder="search for user by fullname"
               type="text"
               className="form-control"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               defaultValue={search}
             />
           </div>
@@ -290,8 +293,8 @@ const User = () => {
               onClick={() => {
                 dispatch(getUserByname(search.length === 0 ? "all" : search))
                   .unwrap()
-                  .then((res) => toast.success(res.message))
-                  .catch((e) => toast.error(e));
+                  .then(res => toast.success(res.message))
+                  .catch(e => toast.error(e));
               }}
             >
               Search
@@ -310,7 +313,7 @@ const User = () => {
           </tr>
         </thead>
         <tbody>
-          {users.slice(indexOfFirst, indexOfLast).map((user) => {
+          {users.slice(indexOfFirst, indexOfLast).map(user => {
             return (
               <tr key={user.idUser}>
                 <td>{user.fullName}</td>
@@ -335,11 +338,11 @@ const User = () => {
                       onClick={() =>
                         dispatch(activeUser(user.idUser))
                           .unwrap()
-                          .then((res) => {
+                          .then(res => {
                             dispatch(getUsers());
                             toast.success(res.message);
                           })
-                          .catch((e) => {
+                          .catch(e => {
                             toast.error(e);
                           })
                       }

@@ -18,12 +18,12 @@ import Spinner from "../compenents/UI/Spinner";
 import useAuth from "../hooks/has-auth";
 
 const RolePerMenu = () => {
-  const { rolePerMenu, isLoading } = useSelector((state) => state.rolePerMenu);
-  const { role: roles } = useSelector((state) => state.role);
-  const { menus } = useSelector((state) => state.menus);
-  const { permission } = useSelector((state) => state.per);
+  const { rolePerMenu, isLoading } = useSelector(state => state.rolePerMenu);
+  const { role: roles } = useSelector(state => state.role);
+  const { menus } = useSelector(state => state.menus);
+  const { permission } = useSelector(state => state.per);
 
-  const { currentMenu } = useSelector((state) => state.menus);
+  const { currentMenu } = useSelector(state => state.menus);
 
   const { showAddBtn, showDeleteBtn } = useAuth(currentMenu);
 
@@ -41,20 +41,20 @@ const RolePerMenu = () => {
   const indexOfFirst = indexOfLast - postsPerPage;
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   // add user
 
   const addARolePerMenu = async () => {
     dispatch(postRolePerMenu(newRolePerMenu))
       .unwrap()
-      .then((res) => {
+      .then(res => {
         dispatch(getRolePerMenu());
         toast.success(res.message);
         setAdd(false);
         setNewRolePerMenu({});
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -68,13 +68,13 @@ const RolePerMenu = () => {
       })
     )
       .unwrap()
-      .then((res) => {
+      .then(res => {
         dispatch(getRolePerMenu());
         setAsk(false);
         toast.success(res.message);
         setId(null);
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -82,8 +82,8 @@ const RolePerMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onChange = (e) => {
-    setNewRolePerMenu((prevData) => ({
+  const onChange = e => {
+    setNewRolePerMenu(prevData => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
@@ -161,7 +161,7 @@ const RolePerMenu = () => {
                 value={newRolePerMenu.idRole}
               >
                 <option value={0}>Choose a Role</option>
-                {roles.map((role) => {
+                {roles.map(role => {
                   return (
                     <option key={role.idRole} value={role.idRole}>
                       {role.nameRole}
@@ -176,10 +176,8 @@ const RolePerMenu = () => {
                 onChange={onChange}
                 value={newRolePerMenu.idPer}
               >
-                <option disabled value={0}>
-                  Choose a Permission
-                </option>
-                {permission.map((per) => {
+                <option value={0}>Choose a Permission</option>
+                {permission.map(per => {
                   return (
                     <option key={per.idPer} value={per.idPer}>
                       {per.namePer}
@@ -194,10 +192,8 @@ const RolePerMenu = () => {
                 onChange={onChange}
                 value={newRolePerMenu.idMenu}
               >
-                <option disabled value={0}>
-                  Choose a Menu
-                </option>
-                {menus.map((menu) => {
+                <option value={0}>Choose a Menu</option>
+                {menus.map(menu => {
                   return (
                     <option key={menu.idMenu} value={menu.idMenu}>
                       {menu.nameMenu}

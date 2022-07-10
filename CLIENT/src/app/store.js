@@ -7,6 +7,7 @@ import roomReducer from "../features/room/roomSlice";
 import userReducer from "../features/user/userSlice";
 import menuReducer from "../features/menu/menuSlice";
 import rolePerMenuReducer from "../features/RolePerMenu/rolePerMenuSlice";
+import videoReducer from "../features/video/videoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     users: userReducer,
     rooms: roomReducer,
     rolePerMenu: rolePerMenuReducer,
+    virtualRooms: videoReducer,
   },
 });

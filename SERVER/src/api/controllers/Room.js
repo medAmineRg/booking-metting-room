@@ -11,7 +11,7 @@ const GetRoom = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       status: "Error",
-      message: error.errors[0].message || "something went wrong try again",
+      message: "something went wrong try again",
       code: 400,
       method: "GET",
       api: "rooms",
@@ -51,7 +51,14 @@ const SearchRoom = async (req, res) => {
       status: "Error",
       method: "POST",
     });
-  if (!req.body.capacity || req.body.capacity <= 1 || isNaN(req.body.capacity)) {
+  if (req.body.capacity === undefined) {
+    req.body.capacity = 2;
+  }
+  if (
+    !req.body.capacity ||
+    req.body.capacity <= 1 ||
+    isNaN(req.body.capacity)
+  ) {
     return res.status(400).json({
       status: "Error",
       code: 400,
@@ -61,19 +68,27 @@ const SearchRoom = async (req, res) => {
     });
   }
   try {
-    const freeRooms = await getFreeRooms(req.body.start, req.body.end, req.body.capacity)
-    return res.status(200).send({freeRooms,status: "OK",
-    code: 200,
-    message: `${freeRooms.length} room found`,
-    api: "search-room",
-    method: "get", });
+    const freeRooms = await getFreeRooms(
+      req.body.start,
+      req.body.end,
+      req.body.capacity
+    );
+    return res
+      .status(200)
+      .send({
+        freeRooms,
+        status: "OK",
+        code: 200,
+        message: `${freeRooms.length} room found`,
+        api: "search-room",
+        method: "get",
+      });
   } catch (error) {
     console.log(error);
     return res.status(400).json({
       status: "Error",
       code: 400,
-      message:
-        "Something went wrong",
+      message: "Something went wrong",
       api: "search-room ",
       method: "POST",
     });
