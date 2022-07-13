@@ -14,7 +14,7 @@ import {
   reset as resetBooking,
   updateBooking,
 } from "../features/booking/bookSlice";
-import { setHours, setMinutes, addMinutes } from "date-fns";
+import { setHours, setMinutes, addMinutes, getDay } from "date-fns";
 import {
   getAvailableRooms,
   getRooms,
@@ -31,6 +31,11 @@ const Booking = () => {
   const { rooms } = useSelector(state => state.rooms);
   const user = JSON.parse(localStorage.getItem("user"));
   const { currentMenu } = useSelector(state => state.menus);
+
+  const isWeekday = date => {
+    const day = getDay(date);
+    return day !== 0 && day !== 6;
+  };
 
   const { showAddBtn, showEditBtn, showDeleteBtn } = useAuth(currentMenu);
 
@@ -136,7 +141,6 @@ const Booking = () => {
   let excludeTime = [];
   let exlaudeHours;
   if (start) {
-    console.log(start);
     exlaudeHours = start.getHours();
     let min = start.getMinutes();
     for (let i = 1; i < 12; i++) {
@@ -223,10 +227,12 @@ const Booking = () => {
                       placeholderText={new Date(book.beginAt).toLocaleString(
                         "fr-FR"
                       )}
+                      filterDate={isWeekday}
                     />
                   </div>
                   <div className="form-group">
                     <ReactDatePicker
+                      filterDate={isWeekday}
                       disabled={start ? false : true}
                       selected={end}
                       onChange={date => setEndDate(date)}
@@ -299,6 +305,7 @@ const Booking = () => {
             <div className="form-group">
               <div className="form-group">
                 <ReactDatePicker
+                  filterDate={isWeekday}
                   selected={start}
                   onChange={date => setStartDate(date)}
                   showTimeSelect
@@ -319,6 +326,7 @@ const Booking = () => {
                 }}
               >
                 <ReactDatePicker
+                  filterDate={isWeekday}
                   disabled={start ? false : true}
                   selected={end}
                   onChange={date => {

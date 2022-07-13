@@ -14,24 +14,25 @@ import {
   getAvailableRooms,
 } from "../../features/room/roomSlice";
 import { getUsers, reset as resetUsers } from "../../features/user/userSlice";
-import enUS from "date-fns/locale/en-US";
 
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
+import { getMonth } from "date-fns";
+
 import startOfWeek from "date-fns/startOfWeek";
 
-import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../UI/Modal";
-import arMa from "date-fns/locale/ar-MA";
+import { enUS } from "date-fns/locale";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/has-auth";
 
 const locales = {
-  "ar-MA": arMa,
+  "en-US": enUS,
 };
 
 const localizer = dateFnsLocalizer({
@@ -39,16 +40,17 @@ const localizer = dateFnsLocalizer({
   parse,
   startOfWeek,
   getDay,
+  getMonth,
   locales,
 });
 
 const MyCalendar = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { bookings, isLoading } = useSelector((state) => state.book);
-  const { users } = useSelector((state) => state.users);
-  const { rooms } = useSelector((state) => state.rooms);
+  const { user } = useSelector(state => state.auth);
+  const { bookings, isLoading } = useSelector(state => state.book);
+  const { users } = useSelector(state => state.users);
+  const { rooms } = useSelector(state => state.rooms);
 
-  const { currentMenu } = useSelector((state) => state.menus);
+  const { currentMenu } = useSelector(state => state.menus);
   const { showAddBtn } = useAuth(currentMenu);
   let min = new Date();
   min.setHours(8);
@@ -69,12 +71,24 @@ const MyCalendar = () => {
 
   if (bookings && bookings.length) {
     for (let i = 0; i < bookings.length; i++) {
-      let newEvent = {
-        id: bookings[i].idBooking,
-        title: bookings[i].subject,
-        start: new Date(bookings[i].beginAt),
-        end: new Date(bookings[i].endAt),
-      };
+      let newEvent;
+      if (bookings[i].isCancled) {
+        newEvent = {
+          id: bookings[i].idBooking,
+          title: bookings[i].subject,
+          start: new Date(bookings[i].beginAt),
+          end: new Date(bookings[i].endAt),
+          isCancled: true,
+        };
+      } else {
+        newEvent = {
+          id: bookings[i].idBooking,
+          title: bookings[i].subject,
+          start: new Date(bookings[i].beginAt),
+          end: new Date(bookings[i].endAt),
+        };
+      }
+
       events.push(newEvent);
     }
   }
@@ -91,13 +105,13 @@ const MyCalendar = () => {
       })
     )
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         dispatch(getBookings());
         setShow(false);
         setBookInfo({});
       })
-      .catch((e) => {
+      .catch(e => {
         toast.error(e);
       });
   };
@@ -112,8 +126,8 @@ const MyCalendar = () => {
   });
   const [roomUser, setRoomUser] = useState({ idRoom: "", idUser: "" });
 
-  const filter = (e) => {
-    setRoomUser((prev) => ({
+  const filter = e => {
+    setRoomUser(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -126,14 +140,14 @@ const MyCalendar = () => {
   const handleSelect = ({ start, end }) => {
     setBookInfo({ ...bookInfo, start, end });
     dispatch(getAvailableRooms({ start, end }))
-    .unwrap()
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((e) => {
-      toast.error(e);
-      setShow(false);
-    });
+      .unwrap()
+      .then(res => {
+        console.log(res);
+      })
+      .catch(e => {
+        toast.error(e);
+        setShow(false);
+      });
     setShow(true);
   };
 
@@ -169,7 +183,7 @@ const MyCalendar = () => {
             >
               <option value="none">All</option>
 
-              {rooms.map((room) => {
+              {rooms.map(room => {
                 return (
                   <option key={room.idRoom} value={room.idRoom}>
                     {room.nameRoom}
@@ -188,7 +202,7 @@ const MyCalendar = () => {
             >
               <option value="none">All</option>
 
-              {users.map((user) => {
+              {users.map(user => {
                 return (
                   <option key={user.idUser} value={user.idUser}>
                     {user.fullName}
@@ -241,12 +255,12 @@ const MyCalendar = () => {
               className="form-control"
               name="idRoom"
               defaultValue={bookInfo.idRoom}
-              onChange={(e) => {
+              onChange={e => {
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value });
               }}
             >
               <option>Choose a room</option>
-              {rooms.map((room) => {
+              {rooms.map(room => {
                 return (
                   <option key={room.idRoom} value={room.idRoom}>
                     {room.nameRoom}
@@ -262,7 +276,7 @@ const MyCalendar = () => {
               className="form-control"
               placeholder="Subject"
               name="subject"
-              onChange={(e) =>
+              onChange={e =>
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value })
               }
               value={bookInfo.subject}
@@ -275,7 +289,7 @@ const MyCalendar = () => {
               className="form-control"
               placeholder="description"
               name="description"
-              onChange={(e) =>
+              onChange={e =>
                 setBookInfo({ ...bookInfo, [e.target.name]: e.target.value })
               }
               value={bookInfo.description}
@@ -285,12 +299,10 @@ const MyCalendar = () => {
       )}
       <div>
         <Calendar
-          drilldownView="agenda"
+          style={{ height: 500 }}
           defaultDate={defaultDate}
-          culture={enUS}
           selectable={showAddBtn}
-          defaultView={Views.DAY}
-          views={["week", "month", "day", "agenda"]}
+          defaultView="day"
           localizer={localizer}
           events={events}
           startAccessor="start"
@@ -299,6 +311,20 @@ const MyCalendar = () => {
           // onSelectEvent={(event) => alert(event.title)}
           min={min}
           max={max}
+          eventPropGetter={(event, start, end, isSelected) => {
+            console.log(event);
+            let newStyle = {};
+
+            if (event.isCancled) {
+              newStyle.backgroundColor = "#FEC43C";
+              newStyle.border = "1px solid #FEC43C";
+            }
+
+            return {
+              className: "",
+              style: newStyle,
+            };
+          }}
         />
       </div>
     </div>

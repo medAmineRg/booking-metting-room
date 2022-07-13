@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DigDate from "../compenents/UI/DigDate";
 import Spinner from "../compenents/UI/Spinner";
 const Dashboard = () => {
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const { user, isLoading } = useSelector(state => state.auth);
 
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ const Dashboard = () => {
   if (isLoading) return <Spinner />;
   return (
     <div className="dashboard">
-      <DigDate/>
+      <DigDate />
     </div>
   );
 };

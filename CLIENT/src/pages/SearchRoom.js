@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAvailableRooms, reset } from "../features/room/roomSlice";
-import { setHours, setMinutes, addMinutes } from "date-fns";
+import { setHours, setMinutes, addMinutes, getDay } from "date-fns";
 import Modal from "../compenents/UI/Modal";
 import { createBookings } from "../features/booking/bookSlice";
 import Pagination from "../compenents/UI/Pagination";
@@ -11,20 +11,25 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const SearchRoom = () => {
-  const { rooms, isLoading } = useSelector((state) => state.rooms);
+  const { rooms, isLoading } = useSelector(state => state.rooms);
   const dispatch = useDispatch();
 
-  const filterPassedTime = (start) => {
+  const filterPassedTime = start => {
     const currentDate = addMinutes(new Date(), 30);
     const selectedDate = new Date(start);
     return currentDate.getTime() < selectedDate.getTime();
+  };
+
+  const isWeekday = date => {
+    const day = getDay(date);
+    return day !== 0 && day !== 6;
   };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
@@ -54,11 +59,11 @@ const SearchRoom = () => {
       })
     )
       .unwrap()
-      .then((res) => {
+      .then(res => {
         toast.success(res.message);
         setShow(false);
       })
-      .catch((e) => toast.error(e));
+      .catch(e => toast.error(e));
   };
 
   let excludeTime = [];
@@ -117,7 +122,7 @@ const SearchRoom = () => {
             </tr>
           </thead>
           <tbody>
-            {rooms.slice(indexOfFirst, indexOfLast).map((room) => {
+            {rooms.slice(indexOfFirst, indexOfLast).map(room => {
               return (
                 <React.Fragment key={room.idRoom}>
                   <tr>
@@ -152,7 +157,7 @@ const SearchRoom = () => {
                           placeholder="Subject"
                           name="subject"
                           value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
+                          onChange={e => setSubject(e.target.value)}
                         />
                       </div>
                       <div className="form-group">
@@ -163,7 +168,7 @@ const SearchRoom = () => {
                           placeholder="Description"
                           name="description"
                           value={description}
-                          onChange={(e) => setDescription(e.target.value)}
+                          onChange={e => setDescription(e.target.value)}
                         />
                       </div>
                     </Modal>
@@ -191,18 +196,19 @@ const SearchRoom = () => {
 
         <section className="form">
           <form
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               dispatch(getAvailableRooms({ start, end, capacity }))
                 .unwrap()
-                .then((res) => toast.success(res.message))
-                .catch((e) => toast.error(e));
+                .then(res => toast.success(res.message))
+                .catch(e => toast.error(e));
             }}
           >
             <div className="form-group">
               <ReactDatePicker
+                filterDate={isWeekday}
                 selected={start}
-                onChange={(date) => setStartDate(date)}
+                onChange={date => setStartDate(date)}
                 showTimeSelect
                 filterTime={filterPassedTime}
                 dateFormat="MMMM d, yyyy h:mm aa"
@@ -220,9 +226,10 @@ const SearchRoom = () => {
               }}
             >
               <ReactDatePicker
+                filterDate={isWeekday}
                 disabled={start ? false : true}
                 selected={end}
-                onChange={(date) => setEndDate(date)}
+                onChange={date => setEndDate(date)}
                 showTimeSelect
                 filterTime={filterPassedTime}
                 dateFormat="MMMM d, yyyy h:mm aa"
@@ -241,7 +248,7 @@ const SearchRoom = () => {
                 name="capacity"
                 placeholder="Enter Capacity"
                 value={capacity}
-                onChange={(e) => setCapacity(e.target.value)}
+                onChange={e => setCapacity(e.target.value)}
               />
             </div>
 
