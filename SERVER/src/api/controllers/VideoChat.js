@@ -9,7 +9,6 @@ const headers = {
   Authorization: "Bearer " + API_KEY,
 };
 const getAllVirtualRooms = async (req, res) => {
-  console.log("ok");
   try {
     const result = await fetch("https://api.daily.co/v1/rooms", {
       headers,
