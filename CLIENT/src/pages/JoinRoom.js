@@ -6,9 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Spinner from "../compenents/UI/Spinner";
 import { getVirtualRooms, reset } from "../features/video/videoSlice";
+import Pagination from "../compenents/UI/Pagination";
 
 export default function JoinRoom() {
   const { virtualRooms, isLoading } = useSelector(state => state.virtualRooms);
+
+  // Change page
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const [room, setRoom] = useState(null);
   const [toogleModal, setToogleModale] = useState(true);
@@ -57,6 +61,11 @@ export default function JoinRoom() {
           })}
         </tbody>
       </table>
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={virtualRooms.length}
+        paginate={paginate}
+      />
     </div>
   );
 }
